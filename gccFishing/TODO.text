@@ -1,0 +1,74 @@
+make png file of logo
+images for countries and cities
+add back links to countries from inside cities
+enable top navbar links when window size reduces
+test on other browsers
+
+loading page at left off scroll
+
+
+
+update profile page
+include mobile numbers, ip address for users
+
+show email ids in profiles
+
+
+configure path in settings
+
+conf time format 
+
+conf time zone
+
+
+wall alignments
+configure conversation page
+
+
+edit profile:
+
+add login and registration in page not found
+
+<-- Imp -->
+
+clean urls!
+
+SEO guide!
+
+django best practices!
+
+implement notifications icon in top nav bar
+
+notifications of same post must be summed 
+
+edit profile page
+
+delete/edit post
+
+delete/edit comment
+
+optimize wall
+comments
+
+implement search
+
+votes & reputation
+
+translation
+
+about page
+contact page
+
+notifications tab
+messages tab
+
+
+
+messages
+geoDjango!
+
+
+
+<--- Issues -->
+
+in conversation page, pressing back after posting a comment creates a problem! ----->> SOLVED! BUT CHECK FOR SIMILAR ISSUES( had to use HttpResponseRedirect)

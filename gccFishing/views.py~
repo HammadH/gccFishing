@@ -1,0 +1,172 @@
+from django.conf import settings
+
+from django.contrib.auth import get_user_model, REDIRECT_FIELD_NAME
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import (AuthenticationForm, SetPasswordForm,
+                                       PasswordChangeForm, PasswordResetForm)
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib import auth
+from django.contrib.sites.models import get_current_site
+from django.core.urlresolvers import reverse_lazy
+from django.shortcuts import redirect, resolve_url, render_to_response
+from django.utils.functional import lazy
+from django.utils.http import base36_to_int, is_safe_url
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic import FormView, TemplateView, RedirectView, ListView
+
+from authtools.forms import UserCreationForm
+import re
+from django.views.generic.base import View
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError
+from django.template import RequestContext
+
+from django.views.decorators.debug import sensitive_post_parameters
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+
+from django.contrib.auth import authenticate, login, logout
+User = get_user_model()
+
+resolve_url_lazy = lazy(resolve_url, str)
+
+from django.forms import EmailField
+from django.core.exceptions import ValidationError
+
+SHA1_RE = re.compile('^[a-f0-9]{40}$')
+
+
+
+
+class mainView(TemplateView):
+	
+	template_name = 'index.html'
+	
+	def get_context_data(self, **kwargs):
+		context = super(mainView, self).get_context_data(**kwargs)
+		context['AuthForm'] = AuthenticationForm		
+		return context
+	
+	
+
+@sensitive_post_parameters()
+@csrf_protect
+@never_cache
+def loginView(request):
+	if request.method == 'POST':
+		email = request.POST.get('email', "")
+		password = request.POST.get('password', "")
+		print email, password		
+		try:		
+			print ('entered try')			
+			user = authenticate(email = email, password = password)
+			print user
+		except:
+			return HttpResponse('no such user, please register')		
+		if user is not None:
+			if user.is_active:
+				login(request, user)
+				
+			else: return HttpResponse('sorry, disabled account, please activate')
+		else: return HttpResponse('invalid login')
+		
+		return HttpResponseRedirect("/")
+		
+
+
+
+def logoutView(request):
+	logout(request)
+	return HttpResponseRedirect("/")
+	
+	
+
+class registration(View):
+	
+	form_class = UserCreationForm	
+		
+	
+	
+	def get(self, request, *args, **kwargs):
+		template_name = 'register.html'
+		return render_to_response(template_name, RequestContext(request))
+
+	def post(self, request, *args, **kwargs):
+		
+		success_url = '/thanks/'
+		fail_url = '/failed/'
+		clean_data = self.get_form_contents(request)
+		new_user = self.create_user(clean_data)
+		if new_user is not None:
+			return HttpResponseRedirect(success_url)
+		else: return HttpResponse("Some error occured! We apologize. Please try later.")
+	
+	
+	def get_form_contents(self, request):
+		""" extracts form data from post request and
+		returns a dict"""
+		error_msg = u"Invalid registration! Please fill appropriately"
+		post = request.POST.copy()
+		if post['name'] and post['email'] and post['password1'] and post['password2'] is not None:			
+			if self.isEmailAddressValid(post['email']):
+				if post['password1'] == post['password2']:
+					
+					clean_data = {}
+					clean_data['name'] = post['name']
+					clean_data['email'] = post['email']
+					clean_data['password1'] = post['password1']
+					clean_data['image'] = request.FILES.get('image',settings.DEFAULT_IMAGE)
+					return clean_data
+				else:
+					error_msg = u" Passwords do not match!"
+			
+			
+			else:
+				error_msg = u"Invalid email!"
+				
+		else:
+			error_msg = u"Some Fields Missing! Please enter all the fields" 
+					
+		
+		return HttpResponseServerError(error_msg)
+	
+	
+
+	def isEmailAddressValid(self, email):
+		try:
+			EmailField().clean(email)
+			return True
+		except ValidationError:
+			return False
+	
+			
+
+
+
+	def create_user(self, clean_data):
+		try:
+			return User.objects.create_user(email=clean_data['email'], name = clean_data['name'], image = clean_data['image'], password =clean_data['password1'])
+		except:
+			return None
+			
+	
+
+def activate(request, activation_key):
+	if SHA1_RE.search(activation_key):
+		try:
+			user = User.objects.get(activation_key = activation_key)
+		except :
+			return HttpResponse('couldnt find activation key in database!!')
+
+		if not user.activation_key_expired():
+			user.is_active = True
+			user.activation_key = user.ACTIVATED
+			user.save()
+			return render_to_response('account_activated.html')
+	return HttpResponse('Some error occured, please register again.')
+
+def profile(request, name):
+	user = User.objects.get(name=name)
+	return render_to_response('profile.html',{'user':user})
+		 	

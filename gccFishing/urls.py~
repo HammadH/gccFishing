@@ -1,0 +1,50 @@
+from django.conf.urls import patterns, include, url
+from django.conf import settings
+
+
+# Uncomment the next two lines to enable the admin:
+from django.contrib import admin
+admin.autodiscover()
+
+from authtools.urls import *
+from views import mainView, registration, loginView, logoutView, activate, profile
+from django.views.generic import TemplateView
+
+
+
+from wall.views import Wallveiw
+
+urlpatterns = patterns('',
+    # Examples:
+    url(r'^$', mainView.as_view(), name='home'),
+    
+    
+    url(r'^register', registration.as_view(), name='registration'),
+    url(r'^thanks', TemplateView.as_view(template_name='thanks.html')),
+
+    	
+    # url(r'^gccFishing/', include('gccFishing.foo.urls')),
+    # Uncomment the admin/doc line below to enable admin documentation:
+    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+
+    # Uncomment the next line to enable the admin:
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/', include('authtools.urls')),
+
+    url(r'^login/', loginView, name = 'login'),
+    url(r'^logout/', logoutView, name = 'logout'),
+
+    url(r'^activate/(?P<activation_key>\w+)/$', activate, name='activation'),			
+
+    url(r'^profile/(?P<name>\w+)/$', profile, name = 'profile'),	
+       
+	
+    url(r'^wall/', Wallview.as_view(), name = 'wall'),
+
+) 
+
+
+if settings.DEBUG :
+    urlpatterns += patterns('',
+        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
+    )

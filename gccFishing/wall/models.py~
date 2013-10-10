@@ -1,0 +1,51 @@
+from django.db import models
+from django.contrib.auth import get_user_model
+from sorl.thumbnail import ImageField
+from django.core.validators import MaxValueValidator
+from django.contrib import admin
+from django.conf import settings
+
+User = get_user_model()
+
+
+
+
+def Imagepost_path( instance, filename):
+	path = settings.MEDIA_ROOT + "/Images/WallImages/%s" %filename
+	return path
+
+
+class Wallpost(models.Model):
+	
+	author = models.ForeignKey(User)
+	posted_on = models.DateTimeField(auto_now_add = True)
+	points = models.IntegerField(default = 0, validators = [MaxValueValidator(100)])	# relate this to user reputation	
+	#location
+	#spot
+
+	image = ImageField(upload_to = Imagepost_path, null = True, blank = True)
+	text = models.TextField(null = True, blank = True) #should be made to show only little text
+	
+	def __unicode__(self):
+		return u"post of %s" %self.author.name
+	
+	
+	def increase_points(self):
+		self.points = self.points + 1
+		
+
+	
+
+admin.site.register(Wallpost)
+
+	
+
+
+	
+
+
+
+
+	
+	
+

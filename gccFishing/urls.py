@@ -1,0 +1,72 @@
+from django.conf.urls import patterns, include, url
+from django.conf import settings
+
+
+# Uncomment the next two lines to enable the admin:
+from django.contrib import admin
+admin.autodiscover()
+
+from authtools.urls import *
+from views import mainView, registration, loginView, logoutView, activate, profile,   \
+notifications_view, process_notification_and_redirect_view, indexView, test_jfu
+from django.views.generic import TemplateView
+from Locations import urls
+
+from Locations.views import countryView, process_up_vote, process_down_vote,ajax_vote
+
+import notifications
+import uploadify
+
+
+urlpatterns = patterns('',
+    # Examples:
+    
+    url(r'^$', indexView.as_view(), name='index'),
+
+    url(r'^(?P<user_id>\d+)/home/$', mainView.as_view(), name='home'),
+    
+    
+    url(r'^register', registration.as_view(), name='registration'),
+    url(r'^thanks', TemplateView.as_view(template_name='thanks.html')),
+
+   
+    # url(r'^gccFishing/', include('gccFishing.foo.urls')),
+    # Uncomment the admin/doc line below to enable admin documentation:
+    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+
+    # Uncomment the next line to enable the admin:
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/', include('authtools.urls')),
+
+    url(r'^login/', loginView, name = 'login'),
+    url(r'^logout/', logoutView, name = 'logout'),
+
+    
+
+    url(r'^activate/(?P<activation_key>\w+)/$', activate, name='activation'),			
+
+    url(r'^profile/(?P<id>\d+)/$', profile, name = 'profile'),	
+       
+	url(r'^processing_notification/(?P<notification_id>\d+)/', process_notification_and_redirect_view, name = 'process_notification'),
+   
+    url(r'^jfu/', test_jfu, name='jfu_upload'),
+ 
+    
+    url(r'^locations/', include('Locations.urls'), name= 'locations'),
+
+    url(r'voteup/(?P<post_id>\d+)/', process_up_vote, name='upvote'),
+    url(r'vote/', ajax_vote, name='upvote_ajax'),
+    url(r'votedown/(?P<post_id>\d+)/', process_down_vote, name='downvote'),
+
+    
+    url('^inbox/notifications/', include(notifications.urls)),
+
+    url(r'^(?P<user_id>\d+)/notifications/', notifications_view, name='notifications'),
+
+) 
+
+
+if settings.DEBUG :
+    urlpatterns += patterns('',
+        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
+    )
