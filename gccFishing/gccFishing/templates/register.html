@@ -1,0 +1,98 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
+
+    <title>Signin Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static "bootstrap.css" %}" rel="stylesheet">
+    <link href="{% static "bootstrap-fileupload.css" %}" rel="stylesheet">
+    <link href="{% static "bootstrap-fileupload.min.css" %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{% static "register.css"%}" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+	<div class="span6">
+	<h2 >Gulf Fishing Club Registration</h2> 
+	<form class="form-signin" method="post" enctype="multipart/form-data">{% csrf_token %}
+       
+	
+	<div class="fileupload fileupload-new" data-provides="fileupload">
+	<div class="fileupload-new thumbnail" style="width: 150px; height: 150px;">
+	<img src="media/Images/default_profile_image.png" /></div>
+	<div class="fileupload-preview fileupload-exists thumbnail" style="max-width:150px;max-height: 150px; line-height: 20px;"></div>
+	<div>
+	<span class="btn btn-file"><span class="fileupload-new">Select image</span>
+	<span class="fileupload-exists">Change</span>
+	<input name = "image" type="file"/></span>
+	<a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+		</div>
+		</div>
+		
+		
+	<input type="text" name = "name" class="form-control" placeholder="Full Name" autofocus>        
+	<input type="text" name = "email" class="form-control" placeholder="Email address">
+
+        <input type="password" name = "password1" class="form-control" placeholder="Password">
+	<input type="password" name = "password2" class="form-control" placeholder="Verify Password">        
+	</label>
+            <div class="control-group">
+                <label for="country" class="control-label"> 
+                        
+                </label>
+                    <div class="controls">
+                        <select name="country" id="country">
+                            <option value="">Select Country</option>
+                            {% for country in countries %}
+                            <option value="{{country}}">{{country}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+            </div>
+
+        <div class="control-group" style="padding:2%">
+                <label for="city" class="control-label" style="color:grey; font-family: helvetica  ; font-size: 16"> 
+                        
+                </label>
+                    <div class="controls">
+                        <select name="city" id="city">   <!-- javascript function to display cities for country -->
+                            <option value="">Select City</option>
+                            {% for city in cities %}
+                            <option value={{city.name}}>{{city}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+        <input button class="btn btn-lg btn-primary btn-block" type="submit" value = "Register">
+      </form>
+  </div>
+    </div> <!-- /container -->
+
+	
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static "bootstrap.js" %}"></script>
+    <script src="{% static "jquery.js" %}"></script>
+    <script src="{% static "bootstrap-fileupload.js" %}"></script>
+    <script src="{% static "bootstrap-fileupload.min.js" %}"></script>
+    
+    	  
+</body>
+</html>

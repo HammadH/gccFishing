@@ -1,0 +1,101 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>GFC Registration</title>	
+	
+
+ <!-- Bootstrap core CSS -->
+    <link href="{% static "bootstrap.css" %}" rel="stylesheet">
+    <link href="{% static "bootstrap.min.css" %}" rel="stylesheet">	
+    <link href="{% static "bootstrap-fileupload.css" %}" rel="stylesheet">
+    <link href="{% static "bootstrap-fileupload.min.css" %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    
+
+</head>
+<body>
+{% block registration %}
+<div class="span6">
+<div class="area">
+<form class="form-horizontal">
+<div class="heading">
+<h4 class="form-heading">Sign Up</h4>
+</div>
+<div class="control-group">
+<label class="control-label" for="inputCompanyName">Company Name</label>
+<div class="controls">
+<input type="text" id="inputCompanyName" placeholder="E.g. Some Software Pvt. Ltd.">
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="inputFirst">First Name</label>
+<div class="controls">
+<input type="text" id="inputFirst" placeholder="E.g. Ashwin">
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="inputLast">Last Name</label>
+<div class="controls">
+<input type="text" id="inputLast" placeholder="E.g. Hegde">
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="inputEmail">Email</label>
+<div class="controls">
+<input type="text" id="inputEmail" placeholder="E.g. ashwinh@cybage.com">
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="inputUser">Username</label>
+<div class="controls">
+<input type="text" id="inputUser" placeholder="E.g. ashwinhegde">
+</div>
+</div>
+<div class="control-group">
+<label class="control-label" for="inputPassword">Password</label>
+<div class="controls">
+<input type="password" id="inputPassword" placeholder="Min. 8 Characters">
+</div>
+</div>
+<div class="control-group">
+<div class="controls">
+<label class="checkbox">
+<input type="checkbox"> I agree all your <a href="#">Terms of Services</a>
+</label>
+<button type="submit" class="btn btn-success">Sign Up</button>
+<button type="button" class="btn">Help</button>
+</div>
+</div>	
+<div class="alert alert-info">
+<button type="button" class="close" data-dismiss="alert">×</button>
+
+
+<strong>Confirmation: </strong> A confirmation email has been sent to your email.<br>
+Thank you for your registration.
+</div>
+</form>	
+</div>
+</div>
+</div>
+</div>
+</div>
+
+ <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static "bootstrap.js" %}"></script>
+    <script src="{% static "jquery.js" %}"></script>
+    <script src="{% static "bootstrap-fileupload.js" %}"></script>
+    <script src="{% static "bootstrap-fileupload.min.js" %}"></script>
+    
+
+</body>
+{% endblock %}
+
+</html>

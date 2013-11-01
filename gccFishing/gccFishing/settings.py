@@ -1,4 +1,6 @@
+import os
 
+SITE_ROOT = os.path.dirname(__file__)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -76,7 +78,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = '/home/hammad/virt_env/virt1/gccFishing/media'
+MEDIA_ROOT = os.path.join(SITE_ROOT,'media')
 
 # Default image path for user profile image.
 DEFAULT_IMAGE_PATH = "Images/default_profile_image.png"
@@ -99,7 +101,7 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-   "/home/hammad/virt_env/virt1/gccFishing/static",
+   os.path.join(SITE_ROOT,'static'),
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -141,12 +143,12 @@ ROOT_URLCONF = 'gccFishing.urls'
 WSGI_APPLICATION = 'gccFishing.wsgi.application'
 
 TEMPLATE_DIRS = (
-   "/home/hammad/virt_env/virt1/gccFishing/templates/",
+   os.path.join(SITE_ROOT,'templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
-	
+    
 
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -176,7 +178,7 @@ INSTALLED_APPS = (
     'south',
     'debug_toolbar',
     'sorl.thumbnail',
-    'autoslug',	
+    'autoslug', 
     'wall',
     'Locations',
     'notifications',

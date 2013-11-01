@@ -1,0 +1,133 @@
+{% load staticfiles %}
+{% load thumbnail %}
+
+
+{% block head %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
+
+    <title>Gulf Fishing</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static "bootstrap.css" %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static "jumbotron.css" %}" rel="stylesheet">
+    <link href="{% static "sticky-footer.css" %}" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+{% endblock %}
+  
+
+  <body>
+  {% block bar %}
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+     <!--       <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>   -->   
+          </ul>
+          <form class="navbar-form navbar-right" action= "{% url 'login' %} ?next={{request.path }}" method="post">{%csrf_token%}
+            <div class="form-group">
+              <input type="text" placeholder="Email" class="form-control" name="email">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" class="form-control" name="password">
+            </div>
+            <input button type="submit" class="btn btn-success" value="Sign In">
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+    {% endblock %}
+   
+
+
+{% block hero %}
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+       <ul class = "nav pull-left" style="padding: 2%">
+       <img src= "/media/logo.jpg" height="200px" width="200px">
+       </ul>
+        
+        <h1>Gulf Fishing Club</h1>
+        <p>If you are in Gulf and you like fishing then this is the place for you to share your fishing experience, make friends and explore fishing spots around you.</p>
+        <ul class = "nav pull-right">
+        <p><a href="/register" class="btn btn-primary btn-lg">Register &raquo;</a></p>
+        </ul>
+      </div>
+    </div>
+    
+{%  block main  %}
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+      {% for country in countries %}
+          <div class="col-lg-4">
+            
+            <a href =  "locations/{{country.slug}}/"><h2>{{country}}</h2> </a>
+            {% thumbnail country.image "300x300" crop="center" as im %}
+            <img src = "{{im.url}}" width= "{{im.width}}" height="{{im.height}}">
+            {% endthumbnail %}
+            <h4>{{country.members_count}}</h4>
+          </div>
+      
+       {% endfor %}
+      </div>
+
+ </div> <!-- /container -->
+{% endblock %}
+      
+
+{% block footer %}
+
+<div id="footer">
+      <div class="container">
+        <p class="text-muted credit">Example courtesy <a href="http://martinbean.co.uk">Martin Bean</a> and <a href="http://ryanfait.com/sticky-footer/">Ryan Fait</a>.</p>
+      </div>
+    </div>
+
+{%  endblock  %}
+   
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../../assets/js/jquery.js"></script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,134 @@
+/* Space out content a bit */
+body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Custom page header */
+.header {
+  border-bottom: 1px solid #e5e5e5;
+}
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+  padding-bottom: 19px;
+}
+
+/* Custom page footer */
+.footer {
+  padding-top: 19px;
+  color: #777;
+  border-top: 1px solid #e5e5e5;
+}
+
+/* Customize container */
+@media (min-width: 768px) {
+  .maincontainer {
+    max-width: 730px;
+   margin: auto;
+  padding-top: 120px;
+
+   
+    
+  }
+}
+.maincontainer-narrow > hr {
+  margin: 30px 0;
+}
+
+/* Main marketing message and sign up button */
+.jumbotron {
+  text-align: center;
+  
+  border-bottom: 1px solid #e5e5e5;
+}
+.jumbotron .btn {
+  font-size: 21px;
+  padding: 14px 24px;
+}
+
+/* Supporting marketing content */
+.marketing {
+  margin: 40px 0;
+}
+.marketing p + h4 {
+  margin-top: 28px;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+  /* Remove the padding we set earlier */
+  .header,
+  .marketing,
+  .footer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  /* Space out the masthead */
+  .header {
+    margin-bottom: 30px;
+  }
+  /* Remove the bottom border on the jumbotron for visual effect */
+  .jumbotron {
+    border-bottom: 0;
+  }
+}
+
+
+.input-block-level {
+  display: block;
+  width: 100%;
+  min-height: 28px;        // Make inputs at least the height of their button counterpart
+  .box-sizing(border-box); // Makes inputs behave like true block-level elements
+}
+
+.post_text {
+  
+  margin-left: 75px;
+
+
+}
+
+ #custom-search-form {
+margin:0;
+margin-top: 5px;
+padding: 0;
+}
+#custom-search-form .search-query {
+padding-right: 3px;
+padding-right: 4px \9;
+padding-left: 3px;
+padding-left: 4px \9;
+/* IE7-8 doesn't have border-radius, so don't indent the padding */
+margin-bottom: 0;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+#custom-search-form button {
+border: 0;
+background: none;
+/** belows styles are working good */
+padding: 2px 5px;
+margin-top: 2px;
+position: relative;
+left: -28px;
+/* IE7-8 doesn't have border-radius, so don't indent the padding */
+margin-bottom: 0;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+.search-query:focus + button {
+z-index: 3;
+}

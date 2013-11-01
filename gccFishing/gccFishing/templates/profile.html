@@ -1,0 +1,91 @@
+
+{% load staticfiles %}
+{% load thumbnail %}
+
+
+{% block head %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
+
+    <title>Gulf Fishing</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static "bootstrap.css" %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static "jumbotron.css" %}" rel="stylesheet">
+    
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+{% endblock %}
+
+
+<body>
+{% block bar %}
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+  <!--      <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href={% url 'home' %}>Gulf Fishing</a>
+        </div> -->
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href={% url 'home' %}>Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li class="active"><a href={% url 'profile' user.id %}>Profile</a></li>
+
+<title>{{user.name}}'s Profile</title>
+		  </ul>
+          <ul class="nav pull-right" style="padding:2%">
+     <a href="{% url 'logout' %}" class="btn btn-primary icon  pull-right">Log out</a>
+		</ul>
+
+		</div>
+		</div>
+		</div>
+{% endblock %}
+
+{% block hero %}
+<div class="jumbotron">
+      <div class="container">
+       <ul class="nav pull-left" style="padding:2%">
+    {% thumbnail  user.image "150x150" crop="center" as im %}
+       <img src="{{im.url}}" width="{{ im.width }}" height="{{ im.height }}">
+    {% endthumbnail %}  
+    </ul>    
+        
+        <h3 style="color: #0099FF"> {{ user.name }}</h3>
+        <h4 style="color: #CC0000">{{user.reputation}}</h4>
+        <h4 style="color: black"> {{ user.city }}, {{user.country}}</h4>
+        
+        <ul class = "nav pull-right">
+        <p><a href="" class="btn btn-primary btn-lg">Go to Wall &raquo;</a></p>
+        </ul>
+      </div>
+    </div>
+{% endblock %}
+
+
+
+
+<!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static "jquery.js" %}" ></script>
+    <script src="{% static "bootstrap.min.js" %}"></script>
+  </body>
+
+</html>

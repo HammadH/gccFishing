@@ -32,10 +32,13 @@ add login and registration in page not found
 <-- Imp -->
 
 clean urls!
+clean templates!
 
 SEO guide!
 
 django best practices!
+
+delete notifications button
 
 implement notifications icon in top nav bar
 
@@ -72,3 +75,6 @@ geoDjango!
 <--- Issues -->
 
 in conversation page, pressing back after posting a comment creates a problem! ----->> SOLVED! BUT CHECK FOR SIMILAR ISSUES( had to use HttpResponseRedirect)
+
+after clicking a new notification, it takes to conversation view and then clicking back the notification is still new. 
+also the nav bar should be aligned!

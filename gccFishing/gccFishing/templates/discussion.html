@@ -1,0 +1,42 @@
+
+<div style="margin-left: 10%; margin-bottom:2%">
+          <form method = "post">{% csrf_token %}
+            <div class="input-group">
+                <input type="text" class="form-control" name = "comment" id="comment" placeholder="Comment">
+                <span class="input-group-btn">
+                <input type="hidden" name="post_id" value = {{post.id}}></input>
+                <button class="btn btn-default" type="submit">Post</button>
+                </span>
+            </div><!-- /input-group -->
+          </form>
+      </div>
+
+
+
+
+{% for comment in post.get_post_comments %}
+     
+         <div class="panel-body" style="margin-bottom:1%; background-color:#D4E3E3; border:solid 1px; ">
+          
+          <ul class="nav pull-left">
+            {% thumbnail comment.author.image "50x50" crop="center" as im %}
+              <img src = "{{im.url}}" width="{{im.width}}" height="{{im.height}}">
+            {% endthumbnail %}
+            <li style="text-align:center">{{comment.author.name}}</li>
+            <li style="text-align:center">{{comment.author.reputation}}</li>
+          </ul>
+            
+
+           
+            <div class = "post_text">
+             <div class="panel panel-default" style="padding:2%">
+              <div class="panel-title">
+                {{comment.text}}
+              </div>
+            </div>
+          </div>
+
+       </div>
+ 
+
+ {% endfor %}
