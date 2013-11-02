@@ -46,9 +46,7 @@ class UserManager(BaseUserManager):
         user = self.model(email=email, **kwargs)
         user.set_password(password)
         user.name = kwargs['name']
-        user.image = kwargs['image']
-        user.country = kwargs['country']
-        user.city = kwargs['city']
+        
 
         salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
         username = kwargs['name']	
