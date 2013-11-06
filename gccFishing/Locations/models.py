@@ -5,7 +5,7 @@ from django.contrib import admin
 
 from django.conf import settings
 from autoslug import AutoSlugField
-
+from smart_selects.db_fields import ChainedForeignKey
 
 
 
@@ -62,11 +62,12 @@ class City(models.Model):
 
 
 
+
 	def __unicode__(self):
 			return self.name
 
 	def get_absolute_url(self):
-		return reverse('insideCity', kwargs= {'country_slug': self.country.slug, 'city_slug' : self.slug}) 
+		return reverse('insideCity_wall', kwargs= {'country_slug': self.country.slug, 'city_slug' : self.slug}) 
 
 
 	def get_member_count(self):
@@ -75,5 +76,21 @@ class City(models.Model):
 
 
 
+class Location(models.Model):
+	country = models.ForeignKey(Country)
+	city = ChainedForeignKey(
+		City,
+		chained_field="country",
+		chained_model_field="country",
+		show_all=False,
+		auto_choose=True
+		)
+
+	def __unicode__(self):
+		return self.country.name
+
+
+
 admin.site.register(Country)
 admin.site.register(City)
+admin.site.register(Location)

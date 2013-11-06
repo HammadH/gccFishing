@@ -29,12 +29,13 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 
 
-from Locations.models import Country, City
+from Locations.models import Country, City, Location
 from wall.models import Wallpost, Comment, pic
 from notifications.models import Notification 
 
 from django.contrib.auth import authenticate, login, logout
 User = get_user_model()
+import json
 
 resolve_url_lazy = lazy(resolve_url, str)
 
@@ -130,6 +131,7 @@ class registration(View):
 		context={}
 		context['countries']=Country.objects.all()
 		context['cities'] = City.objects.all()
+		context['locations'] = Location.objects.all()
 		return context
 
 
@@ -264,3 +266,19 @@ def test_jfu(request):
 
 	return UploadResponse( request, file_dict )
 
+class loc(CreateView):
+	model=Location
+
+def country_select(request):
+	country = request.POST['country']
+	cities = Country.objects.get(name=country).cities.all()
+	l = []
+	for city in cities:
+		l.append(city.name)
+
+
+	return HttpResponse(json.dumps(l))
+
+
+
+	

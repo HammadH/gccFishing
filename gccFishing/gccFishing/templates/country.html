@@ -18,11 +18,9 @@
         </div> 
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-           {% if user.is_authenticated %} 
-              <li><a href="{% url 'home' user_id=user.id%}">Home</a></li>
-             {% endif %}
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+           
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
  {% if user.is_authenticated %}
             <li><a href={% url 'profile' user.id %}>Profile</a></li>
   {% endif %}
@@ -94,16 +92,17 @@
 
 {% block hero %}
 
-<div class="jumbotron" style="margin-top:40px">
+<div class="jumbotron" style="margin-top:40px; ">
       <div class="container" >
+       
+     
+
        <ul class = "nav pull-left" style="padding: 2%">
-       <img src= "/media/logo.jpg" height="200px" width="200px">
+       <img src= "/media/fishing_logo.png" height="200px" width="200px">
        </ul>
 
        <ul class = "nav pull-right" style="padding: 2%; text-align:center" >
-       {% thumbnail country.flag "100x100" as im %}
-       <img src= "{{im.url}}" height="{{im.height}}" width="{{im.width}}">
-       {% endthumbnail %}
+       
         <h5>{{members_count}} Members</h5>
         <h5>{{cities_count}} Cities</h5>
        </ul>
@@ -128,8 +127,8 @@
         {% for city in cities %}
       
   
-        <div class="col-lg-4" >
-        <ul class="thumbnails">
+        <div class="col-lg-4" style="margin-bottom:25px">
+        <ul class="thumbnails" style="list-style-type:none">
           <li class="span4 newclass" style = "width:250px!important;">
           <div class="thumbnail" style="padding:0">
           <div style="padding:4px">

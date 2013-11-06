@@ -155,8 +155,9 @@ class AbstractNamedUser(AbstractEmailUser):
     image = ImageField(_('profile_image'), upload_to=image_path, default = settings.DEFAULT_IMAGE_PATH)
     
     country = models.ForeignKey('Locations.Country', related_name = "members", null = True)
+    city = models.ForeignKey('Locations.City', related_name = "members", null = True)
 
-    city = models.ForeignKey('Locations.City', related_name = 'members', null = True)
+    
     
 	
     reputation = models.IntegerField(_("reputation"), default = 0)

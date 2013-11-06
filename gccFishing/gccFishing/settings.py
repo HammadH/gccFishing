@@ -185,17 +185,14 @@ INSTALLED_APPS = (
     'endless_pagination',
     'voting',
     'jfu',
-   
-    
-    
-
-    
-  
-    
+    'smart_selects', 
+    'spots',
+    'geoposition',
 
 )
-# django crispy form settings to use twitter bootstrap
-CRISPY_TEMPLATE_PACK = 'bootstrap'
+
+
+
 
 
 

@@ -10,9 +10,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
+    <link rel="shortcut icon" href="/media/fishing_logo.png">
 
-    <title>Gulf Fishing</title>
+    <title>Gulf Fishing Club</title>
 
     <!-- Bootstrap core CSS -->
     
@@ -45,11 +45,9 @@
         </div> 
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-             {% if user.is_authenticated %} 
-               <li><a href="{% url 'home' user_id=user.id%}">Home</a></li>
-             {% endif %}
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
  {% if user.is_authenticated %}
             <li><a href={% url 'profile' user.id %}>Profile</a></li>
   {% endif %}
@@ -162,53 +160,21 @@
  <div class="container">
 
 <div class="row">
-        <div class="col-lg-4">
-         
+       
+    {% for country in countries %}
 
-          <img class="img-circle" src="data:image/png;base64," data-src="holder.js/140x140" alt="Generic placeholder image">
-          <h2>Meet People</h2>
+
+        <div class="col-lg-4" style="text-align:center">
+         
+           {% thumbnail country.image "300x300" crop="center" as im %}
+            <img src = "{{im.url}}" width= "{{im.width}}" height="{{im.height}}">
+            {% endthumbnail %}
+          
+          <a style = "text-decoration:none; " href="{{ country.get_absolute_url }}"><h3>{{country}}</h3></a>
          
         </div><!-- /.col-lg-4 -->
-
-        <div class="col-lg-4">
-         
-
-          <img class="img-circle" src="data:image/png;base64," data-src="holder.js/140x140" alt="Generic placeholder image">
-          <h2>Meet People</h2>
-         
-        </div><!-- /.col-lg-4 -->
-
-        <div class="col-lg-4">
-         
-
-          <img class="img-circle" src="data:image/png;base64," data-src="holder.js/140x140" alt="Generic placeholder image">
-          <h2>Meet People</h2>
-         
-        </div><!-- /.col-lg-4 -->
-
-        <div class="col-lg-4">
-         
-
-          <img class="img-circle" src="data:image/png;base64," data-src="holder.js/140x140" alt="Generic placeholder image">
-          <h2>Meet People</h2>
-         
-        </div><!-- /.col-lg-4 -->
-
-        <div class="col-lg-4">
-         
-
-          <img class="img-circle" src="data:image/png;base64," data-src="holder.js/140x140" alt="Generic placeholder image">
-          <h2>Meet People</h2>
-         
-        </div><!-- /.col-lg-4 -->
-
-        <div class="col-lg-4">
-         
-
-          <img class="img-circle" src="data:image/png;base64," data-src="holder.js/140x140" alt="Generic placeholder image">
-          <h2>Meet People</h2>
-         
-        </div><!-- /.col-lg-4 -->
+         {% endfor %}
+       
 
   </div><!-- /.row -->
 
@@ -219,57 +185,16 @@
 
 
 
-        {% for country in countries %}
+        
       
-  <div class="col-lg-4" style=" width:310px!important">
-        
-        <ul class="thumbnails" style="margin:2%;">
-          <div class="span4 newclass" style = "width:305px!important">
-          <div class="thumbnail" style="padding: 0; border:solid 1px; border-color:orange">
-          
-            <div class="panel panel-default" style="text-align: center; height:40px">
-            <div class="panel-heading">
-                
-            <a style = "text-decoration:none" href="{{ country.get_absolute_url }}"><h3>{{country}}</h3>
-           
-            </div>
-          </div>
-            {% thumbnail country.image "300x300" crop="center" as im %}
-            <img src = "{{im.url}}" width= "{{im.width}}" height="{{im.height}}">
-            {% endthumbnail %}
-
-          </a>
-          
-          <div class="panel panel-default" style="text-align: center">
-            <div class="panel-heading">
-        
-        <div class="row-fluid">
-            <div class="span4"><b>{{country.get_member_count}} </b><small>Members</small></div>
-            <div class="span4"><b>{{country.get_city_count}} </b><small>Cities</small></div>
-        
-        </div>
-        </div>
-        </div>
-        
-
-        </div>
-       </div>
-    
-    
-          </ul>
-    
-    </div>
-    </div>
-    </div>
-    </div>
-        </div>
+  
 
 
 
 
 
         
-        {% endfor %}
+       
 
 
     </div> <!-- /container -->
@@ -280,10 +205,6 @@
 
 
 
-
-<div class="container" style = "background-color:yellow">
-    
-    </div>
 
 
    

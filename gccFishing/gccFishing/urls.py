@@ -8,15 +8,21 @@ admin.autodiscover()
 
 from authtools.urls import *
 from views import mainView, registration, loginView, logoutView, activate, profile,   \
-notifications_view, process_notification_and_redirect_view, indexView, test_jfu
+notifications_view, process_notification_and_redirect_view, indexView, test_jfu, loc, country_select
 from django.views.generic import TemplateView
 from Locations import urls
+from django.contrib.auth import get_user_model
+from django.views.generic.edit import CreateView
+from Locations.models import City
+
+import spots
 
 from Locations.views import countryView, process_up_vote, process_down_vote,ajax_vote
 
 import notifications
 import uploadify
 
+User = get_user_model()
 
 urlpatterns = patterns('',
     # Examples:
@@ -53,6 +59,7 @@ urlpatterns = patterns('',
  
     
     url(r'^locations/', include('Locations.urls'), name= 'locations'),
+    url(r'^locations/(?P<country_slug>[\w-]+)/(?P<city_slug>[\w-]+)/spots/', include(spots.urls)),
 
     url(r'voteup/(?P<post_id>\d+)/', process_up_vote, name='upvote'),
     url(r'vote/', ajax_vote, name='upvote_ajax'),
@@ -62,6 +69,13 @@ urlpatterns = patterns('',
     url('^inbox/notifications/', include(notifications.urls)),
 
     url(r'^(?P<user_id>\d+)/notifications/', notifications_view, name='notifications'),
+    url(r'^chaining/', include('smart_selects.urls')),
+    url(r'^user/', CreateView.as_view(model=User)),
+    url(r'^loc/', loc.as_view()),
+
+    url(r'^country_select', country_select, name='country_select'),
+
+    url(r'^add_city/', CreateView.as_view(model=City)),
 
 ) 
 

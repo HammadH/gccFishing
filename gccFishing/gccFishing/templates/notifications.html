@@ -58,11 +58,9 @@
         </div> 
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-             {% if user.is_authenticated %} 
-              <li><a href="{% url 'home' user_id=user.id%}">Home</a></li>
-             {% endif %}
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+             
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
  {% if user.is_authenticated %}
             <li><a href={% url 'profile' user.id %}>Profile</a></li>
   {% endif %}
@@ -168,9 +166,12 @@
 <div class="container" style="margin-left:20%; margin-right:20%;">
       <!-- Example row of columns -->
    <ul class="nav nav-tabs">
-  <li ><a href="{% url 'insideCity_wall' user.country.slug user.city.slug %}">Wall</a></li>
-  
-  <li></li>
+  <li ><a href="{% url 'insideCity_wall' user.country.slug user.city.slug %}"><img src = "/media/Images/wall.png" style="margin-right:5px">Wall</a></li>
+  <li ><a href="{% url 'insideCity_spots' city.country.slug city.slug %}"><img src = "/media/Images/spots.png" style="margin-right:5px"> Fishing Spots</a></li>
+  <li ><a href="{% url 'insideCity_items' city.country.slug city.slug %}"><img src = "/media/Images/rod.png" style=" width:35px; height:35px;margin-right:5px; margin-bottom:-10px"> Buy/Sell</a></li>
+  <li ><a href="{% url 'insideCity_offshore' city.country.slug city.slug %}"><img src = "/media/Images/offshore.png" style="margin-right:5px"> Offshore</a></li>
+  <li><a href="{% url 'insideCity_fishes' city.country.slug city.slug %}"><img src = "/media/Images/fishes.png" style="margin-right:5px"> Fishes</a></li>
+  <li><a href="{% url 'insideCity_scuba' city.country.slug city.slug %}"><img src = "/media/Images/scuba.png" style="margin-right:5px"> Scuba diving</a></li>
   
   {% notifications_unread as unread_count %}
       
@@ -181,7 +182,7 @@
   <li class="active"><a href="{% url 'notifications' user_id=user.id %}">Notifications</a></li>
   {% endif %}
   
-  <li><a href="#">Messages</a></li>
+
 </ul>   
     
 

@@ -103,7 +103,18 @@ class citywall(View):
 
 			
 
-			
+	def get_context_data(self, city_slug):
+		context = {}
+		try:
+			city = City.objects.get(slug=city_slug)
+		except City.DoesNotExist:
+			return None
+		context['city'] = city
+		context['posts'] = city.posts.order_by('-posted_on')[:25] 
+		context['members_count'] = city.members.count()
+		context['members'] = city.members.order_by('reputation')
+		#context['spots']
+		return context
 
 
 
@@ -121,24 +132,6 @@ class citywall(View):
 		except:
 			return HttpResponse('some error in posting')
 		return post
-		
-	
-
-
-
-
-	def get_context_data(self, city_slug):
-		context = {}
-		try:
-			city = City.objects.get(slug=city_slug)
-		except City.DoesNotExist:
-			return None
-		context['city'] = city
-		context['posts'] = city.posts.order_by('-posted_on')[:25] 
-		context['members_count'] = city.members.count()
-		context['members'] = city.members.order_by('reputation')
-		#context['spots']
-		return context
 
 
 
@@ -257,6 +250,102 @@ def process_down_vote(request, post_id):
 	else:
 		return HttpResponse('login Please')
 
+class citySpots(View):
+
+	def get(self, request, *args, **kwargs):
+		template_name = 'spots.html'
+		city_slug = kwargs['city_slug']
+		context = self.get_context_data(city_slug)
+		return render_to_response(template_name, context, RequestContext(request))
+
+	def get_context_data(self, city_slug):
+		context = {}
+		try:
+			city = City.objects.get(slug=city_slug)
+		except City.DoesNotExist:
+			return None
+		context['city'] = city
+		
+		#context['spots']
+		return context
+
+class cityOffshore(View):
+
+	def get(self, request, *args, **kwargs):
+		city_slug = kwargs['city_slug']
+		template_name = 'offshore.html'
+		context = self.get_context_data(city_slug)
+		return render_to_response(template_name, context, RequestContext(request))
+
+	def get_context_data(self, city_slug):
+		context = {}
+		try:
+			city = City.objects.get(slug=city_slug)
+		except City.DoesNotExist:
+			return None
+		context['city'] = city
+		
+		#context['spots']
+		return context
+
+
+class cityItems(View):
+
+	def get(self, request, *args, **kwargs):
+		city_slug = kwargs['city_slug']
+		template_name = 'items.html'
+		context = self.get_context_data(city_slug)
+		return render_to_response(template_name, context, RequestContext(request))
+
+	def get_context_data(self, city_slug):
+		context = {}
+		try:
+			city = City.objects.get(slug=city_slug)
+		except City.DoesNotExist:
+			return None
+		context['city'] = city
+		
+		#context['spots']
+		return context
+
+
+class cityFishes(View):
+
+	def get(self, request, *args, **kwargs):
+		template_name = 'fishes.html'
+		city_slug = kwargs['city_slug']
+		context = self.get_context_data(city_slug)
+		return render_to_response(template_name, context, RequestContext(request))
+
+	def get_context_data(self, city_slug):
+		context = {}
+		try:
+			city = City.objects.get(slug=city_slug)
+		except City.DoesNotExist:
+			return None
+		context['city'] = city
+		
+		#context['spots']
+		return context
+
+class cityScuba(View):
+
+	def get(self, request, *args, **kwargs):
+		template_name = 'scuba.html'
+		city_slug = kwargs['city_slug']
+		context = self.get_context_data(city_slug)
+		return render_to_response(template_name, context, RequestContext(request))
+
+	def get_context_data(self, city_slug):
+		context = {}
+		try:
+			city = City.objects.get(slug=city_slug)
+		except City.DoesNotExist:
+			return None
+		context['city'] = city
+		
+		#context['spots']
+		return context
 
 
 
