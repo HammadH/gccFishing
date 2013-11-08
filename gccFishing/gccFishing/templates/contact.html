@@ -1,0 +1,127 @@
+{% extends "index.html" %}
+
+{% load staticfiles %}
+
+
+{% block head %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="/media/fishing_logo.png">
+    
+    <title>Contact Gulf Fishing Club</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static "styles-blue.css" %}" rel="stylesheet">
+<link href="{% static "bootstrap.css" %}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{% static "bootstrap.min.css" %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Rancho&effect=shadow-multiple">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+{% endblock %}
+
+<body>
+
+
+
+{% block bar %}
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        <a class="navbar-brand" href={% url 'index' %}>Gulf Fishing</a>
+        </div> 
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact</a></li>
+ 
+            
+  
+
+  <!--          <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>   -->
+          </ul>
+     
+{% block user %}
+	
+  </div>  </div>  </div>
+    {%endblock%}
+  </div>
+{% endblock %} 
+{% block hero %}
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+{% endblock %}
+{% block main %}
+
+<div class="container" style="margin-top:100px; background-color:;">
+<div class= "row">
+	<div class = "col-lg-12" style="text-align:center;">
+
+<img src = "/media/fishing_logo.png" style="width:100px;height:100px; ">
+<h1 style="font-family:Rancho">The Gulf Fishing Club</h1>
+<h2 style="font-family:Rancho;">For Ideas or suggestions: ideas@gws.com </h2>
+  <h2 style="font-family:Rancho">For issues or bugs: 0554512140 and support@gws.com</h2>
+
+  <h2 style="font-family:Rancho">If there any developers who would like to get involved, please contact me at info@gws.com</h2> 
+
+  
+
+
+  
+
+<div style="margin-top:100px">
+
+<img src = "/media/logo.png" style="width:100px;height:100px">
+<p><i>This website is built & maintained by GREAT WHITE STUDIOS-a software development studio.</i></p>
+</div>
+</div>
+	</div>
+{% endblock %}
+ 
+{% block footer %}
+   
+   <footer class="widewrapper footer" style="margin-top:200px">
+        <div class="container" >
+         
+
+        <div class="container">
+            <div class="copyright" style="text-align:center">
+                <p><img src="/media/logo.png" style="width:30px; height:30px;">Great White Studio, 2013 All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+{% endblock %}
+
+
+  <script src="{% static "jquery.js" %}" ></script>
+    <script src="{% static "bootstrap.min.js" %}"></script>
+  </body>
+
+</html>
+

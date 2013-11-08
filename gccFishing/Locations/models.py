@@ -23,6 +23,7 @@ class Country(models.Model):
 		name = models.CharField("Name of Country", max_length = 100, unique = True)
 		slug = AutoSlugField(populate_from = 'name')
 		image = ImageField(upload_to = image_path)
+		
 		flag = ImageField (upload_to = image_path)
 
 		

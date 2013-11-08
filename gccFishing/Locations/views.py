@@ -158,7 +158,7 @@ def conversation_view(request, country_slug, city_slug, post_id):
 		return render_to_response('page_not_found.html')	
 
 
-def ajax_vote(request):
+def ajax_Upvote(request):
 	if request.user.is_authenticated():
 		post_id = request.POST.get('post_id')
 		post = Wallpost.objects.get(id=post_id)
@@ -179,7 +179,32 @@ def ajax_vote(request):
 	else:
 		return HttpResponse(simplejson.dumps('Please login to vote.'), content_type="application/json")
 
+def ajax_Downvote(request):
+	if request.user.is_authenticated():
+		post_id = request.POST.get('post_id')
+		post = Wallpost.objects.get(id=post_id)
+		voter = request.user
+		vote_obj = Vote.objects.record_vote(post, voter, -1)
+		post.save_points()
+		points = post.get_points()
+		author_rep = post.author.reputation
+		response_dict = {
+		'success' : True,
+		'points' : points,
+		'author_rep': author_rep,
+		}
+		return HttpResponse(simplejson.dumps(response_dict), content_type="application/json")
 
+		
+
+	else:
+		return HttpResponse(simplejson.dumps('Please login to vote.'), content_type="application/json")
+
+
+
+		
+
+	
 
 
 

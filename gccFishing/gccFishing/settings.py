@@ -22,7 +22,8 @@ DATABASES = {
         'USER': 'Hammad',
         'PASSWORD': 'hammad',
         'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
+        'PORT': '5432',  
+        'OPTIONS': {'autocommit': True,},                    # Set to empty string for default.
     }
 }
 
@@ -98,6 +99,8 @@ STATIC_ROOT = ' '
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
+
+
 
 # Additional locations of static files
 STATICFILES_DIRS = (

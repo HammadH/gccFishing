@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "index.html" %}
 {% load staticfiles %}
 {% load notifications_tags %}
 {% load thumbnail %}
@@ -42,21 +42,28 @@
 AIzaSyDEW2QDwkdVa8eci2h0T3B_iF4nQXdqbqU&sensor=false"></script>
 
 <script>
+
+var map, marker, waypointByID = {};
+
 function initialize()
 {
 var mapProp = {
   center:new google.maps.LatLng(27.012909,49.657731),
-  zoom:12,
+  zoom:6,
   mapTypeId:google.maps.MapTypeId.ROADMAP
   };
-var map=new google.maps.Map(document.getElementById("googleMap")
+map=new google.maps.Map(document.getElementById("googleMap")
   ,mapProp);
+var weatherLayer = new google.maps.weather.WeatherLayer({
+
+});
+weatherLayer.setMap(map);
 }
 
-google.maps.event.addDomListener(window, 'load', initialize);
 
 
-var marker, waypointID = {};
+
+
 
 {% for waypoint in waypoints %}
 waypointByID[{{waypoint.id}}] = {
@@ -64,27 +71,30 @@ waypointByID[{{waypoint.id}}] = {
     lat: {{waypoint.geometry.y}},
     lng: {{waypoint.geometry.x}}
 };
+
 {% endfor %}
 
 $(document).ready(function () {
+    
     function activateWaypoints() {
         // Add waypoint click handler
         $('.waypoint').each(function () {
-            $(this).click(function() {
+            
                 var waypoint = waypointByID[this.id];
+               
                 var center = new google.maps.LatLng(waypoint.lat, waypoint.lng);
-                if (marker) marker.setMap();
-                marker = new google.maps.Marker({map: map, position: center});
-                map.panTo(center);
-            }).hover(
-                function () {this.className = this.className.replace('OFF', 'ON');},
-                function () {this.className = this.className.replace('ON', 'OFF');}
-            );
-        });
-    }
-    activateWaypoints();
-});
-
+                
+                var spot = new google.maps.Marker({
+                  position: center,
+                  map: map,
+                  
+                });
+            });
+        
+        }
+   activateWaypoints();
+    });
+google.maps.event.addDomListener(window, 'load', initialize);
 
 
 </script>
@@ -104,85 +114,7 @@ $(document).ready(function () {
 {% endblock %}
 
 <body onload="init()">
- {% block bar %}
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-      <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href={% url 'index' %}>Gulf Fishing</a>
-        </div> 
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-        
-            <li><a href="/about">About</a></li>
-            <li><a href="/contact">Contact</a></li>
- {% if user.is_authenticated %}
-            <li><a href={% url 'profile' user.id %}>Profile</a></li>
-  {% endif %}
-
-  <!--          <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>   -->
-          </ul>
-          {% block user %}
-      
-    {% if user.is_authenticated %}
-    
-      <ul class="nav pull-right" style="padding:2%">
-     <a href="{% url 'logout' %}" class="btn btn-primary icon  pull-right">Log out</a>
-    </ul>
-
-      <ul class="nav pull-right" style="padding:1%">
-   <a href="{% url 'profile' user.id %}" ><h5 style="color: #0099FF"> {{ user.name }}</h5></a>
-    <h6  style="color: #CC0000">{{user.reputation}}</h6>
-        </ul>
-      
-
-      <ul class="nav pull-right" style="padding-top: 1%; padding-right:0.5%">
-        
-        {% thumbnail  user.image "50x50" crop="center" as im %}
-       <img src="{{im.url}}" width="{{ im.width }}" height="{{ im.height }}">
-    {% endthumbnail %}  
-        
-      </ul>
-    
-      
-       
-
-
-    
-    {% else %}
-
-
-     <form class="navbar-form navbar-right" action= "{% url 'login' %} ?next={{request.path }}" method="post">{%csrf_token%}
-            <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control" name="email">
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control" name="password">
-            </div>
-            <input button type="submit" class="btn btn-success" value="Sign In">
-          </form>
-        <!--/.navbar-collapse -->
-  {% endif %}      
-  </div>
-  </div>
-    {% endblock %}
-    </div>
-{% endblock %}
+ 
 
 
 
@@ -258,10 +190,13 @@ $(document).ready(function () {
     <hr>
 
 
-<div id="map">
-  <p>these are the spots</p>
-  {{spots}}
-</div>
+
+  <h2 style="text-align:center">--work in progress--</h2>
+  <div style="text-align:center">
+  <img src = "/media/Images/atwork.jpg" >
+  </div>
+
+
 
 {% endblock %}
 

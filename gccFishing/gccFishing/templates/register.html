@@ -68,11 +68,12 @@
 
   </head>
 
-  <body>
+  <body style="background-image:url('/media/Images/lure.jpg');background-repeat:no-repeat;">
 
     <div class="container">
+        <div class="pull-right">
 	<div class="span6" style="text-align:center">
-	<div class="font-effect-shadow-multiple" style="font-family:Rancho;font-size:50px"><img src="media/fishing_logo.png" style="width:100px;height:100px">Gulf Fishing Club Registration</div> 
+	<div class="font-effect-shadow-multiple" style="font-family:Rancho;font-size:50px"><img src="media/fishing_logo.png" style="width:150px;height:150px">Gulf Fishing Club Registration</div> 
 	<form class="form-signin" method="post" enctype="multipart/form-data">{% csrf_token %}
        
 	
@@ -133,6 +134,8 @@
       </form>
       <div class="alert alert-info" id="add_city_link" style="margin:20px">Dont see your city? <a href="/add_city"><b>Click here to add it.</b></a></div>
   </div>
+</div>
+</div>
     </div> <!-- /container -->
 
 	

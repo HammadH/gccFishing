@@ -10,7 +10,7 @@ def index(request, *args, **kwargs):
 	city_slug = kwargs['city_slug']
 	city = City.objects.get(slug = city_slug)
 	country = Country.objects.get(slug = kwargs['country_slug'])
-	spots = Loc.objects.order_by('id')
+	spots = Loc.objects.order_by('name')
 	context = {}
 	context['city'] = city
 	context['country'] = country

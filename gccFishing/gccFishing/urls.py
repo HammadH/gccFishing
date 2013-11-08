@@ -17,7 +17,7 @@ from Locations.models import City
 
 import spots
 
-from Locations.views import countryView, process_up_vote, process_down_vote,ajax_vote
+from Locations.views import countryView, process_up_vote, process_down_vote,ajax_Upvote, ajax_Downvote
 
 import notifications
 import uploadify
@@ -46,6 +46,8 @@ urlpatterns = patterns('',
 
     url(r'^login/', loginView, name = 'login'),
     url(r'^logout/', logoutView, name = 'logout'),
+    url(r'^about/', TemplateView.as_view(template_name='about.html'), name = 'about'),
+    url(r'^contact/', TemplateView.as_view(template_name='contact.html'), name = 'contact'),
 
     
 
@@ -62,7 +64,8 @@ urlpatterns = patterns('',
     url(r'^locations/(?P<country_slug>[\w-]+)/(?P<city_slug>[\w-]+)/spots/', include(spots.urls)),
 
     url(r'voteup/(?P<post_id>\d+)/', process_up_vote, name='upvote'),
-    url(r'vote/', ajax_vote, name='upvote_ajax'),
+    url(r'voteU/', ajax_Upvote, name='upvote_ajax'),
+    url(r'voteD/', ajax_Downvote, name='downvote_ajax'),
     url(r'votedown/(?P<post_id>\d+)/', process_down_vote, name='downvote'),
 
     
