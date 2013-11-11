@@ -65,15 +65,6 @@ weatherLayer.setMap(map);
 
 
 
-{% for waypoint in waypoints %}
-waypointByID[{{waypoint.id}}] = {
-    name: "{{waypoint.name}}",
-    lat: {{waypoint.geometry.y}},
-    lng: {{waypoint.geometry.x}}
-};
-
-{% endfor %}
-
 $(document).ready(function () {
     
     function activateWaypoints() {

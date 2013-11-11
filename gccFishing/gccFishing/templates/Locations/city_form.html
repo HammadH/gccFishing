@@ -25,14 +25,15 @@
 <body>
 <div class="container">
 	<div class="span6" style="text-align:center">
-
+<h3 style="text-align:center">Add your city</h3>
 <form  action="" method="post">{% csrf_token %}
-    <ul class="city_details" style="list-style-type:none">
-        <li id="name" class="form-control">{{ form.name }}</li>
-        <li id="image" class="form-control">{{ form.image }}</li>
-        <li id="country" class="form-control">{{ form.country }}</li>
+    <ul class="city_details" style="list-style-type:none; margin:10px;">
+        <li id="name" class="form-control" style="margin:10px">City Name:{{ form.name }}</li>
+        <li id="country" class="form-control" style="margin:10px">Choose country:{{ form.country }}</li>
+    
+        <li id="image" class="" style="margin:10px">Add picture:{{ form.image }}</li>
     </ul>
-    <input type="submit" value="Create" />
+    <input type="submit" value="Create" style="text-align:center" />
 </form>
 </div>
 </div>

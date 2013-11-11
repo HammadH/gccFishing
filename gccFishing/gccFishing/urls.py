@@ -17,7 +17,7 @@ from Locations.models import City
 
 import spots
 
-from Locations.views import countryView, process_up_vote, process_down_vote,ajax_Upvote, ajax_Downvote
+from Locations.views import countryView, process_up_vote, process_down_vote,ajax_Upvote, ajax_Downvote, addCity
 
 import notifications
 import uploadify
@@ -49,7 +49,7 @@ urlpatterns = patterns('',
     url(r'^about/', TemplateView.as_view(template_name='about.html'), name = 'about'),
     url(r'^contact/', TemplateView.as_view(template_name='contact.html'), name = 'contact'),
 
-    
+ 
 
     url(r'^activate/(?P<activation_key>\w+)/$', activate, name='activation'),			
 
@@ -78,7 +78,7 @@ urlpatterns = patterns('',
 
     url(r'^country_select', country_select, name='country_select'),
 
-    url(r'^add_city/', CreateView.as_view(model=City)),
+    url(r'^add_city/', addCity.as_view()),
 
 ) 
 

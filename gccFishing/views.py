@@ -213,7 +213,7 @@ def activate(request, activation_key):
 			user.is_active = True
 			user.activation_key = user.ACTIVATED
 			user.save()
-			return render_to_response('account_activated.html')
+			return render_to_response('account_activated.html',{'user':user})
 	return HttpResponse('Some error occured, please register again.')
 
 

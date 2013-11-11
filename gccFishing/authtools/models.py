@@ -117,7 +117,7 @@ class AbstractEmailUser(AbstractBaseUser, PermissionsMixin):
 	subject = ''.join(subject.splitlines())
 	message = render_to_string('activation_email.txt', ctx_dict)
 		
-	send_mail(subject, message, 'gccFishing.com', [email,],  fail_silently = False)
+	send_mail(subject, message, 'registration@gccfishing.com', [email],  fail_silently = False)
 	
 	
 
