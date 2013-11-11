@@ -22,8 +22,7 @@
        
        <img src= "/media/fishing_logo.png" height="150px" width="150px">
         <h2>Gulf Fishing Club <b>{{country}}</b></h2>
-        <h5><img src="/media/Images/user.png" style="margin-right:15px">{{members_count}} Members</h5>
-        <h5><img src="/media/Images/spots.png" style="margin-right:15px">{{cities_count}} Cities</h5> 
+         
         
         
         
@@ -38,7 +37,13 @@
   {% block main %}
  <div class="container">
       <!-- Example row of columns -->
-     
+      {% if country.cities.count == 0 %}
+
+      <h3 style="text-align:center"><a href="/add_city">Create your city</a><h3>
+
+       {% else %}
+
+
         {% for city in cities %}
       
   
@@ -77,7 +82,8 @@
         </div>
         {% endfor %}
 
-
+   <span class="badge pull-right" style="background-color:orange"><h4 ><a href ="/add_city" style="text-decoration:none;color:white;">Click here to add your city</a></h4></span>
+    {% endif %}
     </div> <!-- /container -->
 
  

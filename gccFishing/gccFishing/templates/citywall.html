@@ -108,6 +108,27 @@
       });
 
 
+
+   $('#post_button').prop('disabled', true);
+
+   $('#wallpost').on("propertychange input textInput", function(){
+    if($('#wallpost').val() != '')
+    {
+       $('#post_button').prop('disabled', false);
+    } else 
+    {
+      $('#post_button').prop('disabled', true);
+    }
+   });
+   
+
+
+   
+$('#wallimage').change(function(){
+
+  $('#wallpost').attr("placeholder", "YOU NEED TO SAY SOMETHING HERE. TRY TO PROVIDE INFORMATION THAT WILL BE HELPFUL TO OTHERS");
+});
+
     });
   
 
@@ -115,7 +136,7 @@
 
 
   </script>
-   
+
 
 
 
@@ -198,7 +219,7 @@
 
         {% if unread_count %}
       
-      <li><a href="{% url 'notifications' user_id=user.id %}">Notifications<i class="badge pull-right" style="background-color:orange; margin-left:5px">{{unread_count}}</span></a></li>
+      <li><a href="{% url 'notifications' user_id=user.id %}">Notifications<i class="badge pull-right" style="background-color:orange; margin-left:5px">{{unread_count}}</i></a></li>
   
       {% else %}
   <li class="pull-right"><a href="{% url 'notifications' user_id=user.id %}">Notifications</a></li>
@@ -216,7 +237,7 @@
       
           <form method="post" id ="wallpost_form" enctype="multipart/form-data">{% csrf_token %}
              
-            <textarea  rows = "3" id="wallpost" name="wallpost" class="input-block-level" placeholder="Lets fish together - POST AWAY!" style="border:solid 1px"></textarea>
+            <textarea  rows = "3" id="wallpost" name="wallpost" class="input-block-level" placeholder="Lets fish together - POST AWAY!" style="border:solid 1px" autofocus></textarea>
           
           
           <input type="file" name="wallimage" id="wallimage">
@@ -224,6 +245,7 @@
           <input type="hidden" id="city_slug" value = "{{city.slug}}" name="city_slug"></input>
           <input type="hidden" id = "country_slug" value = "{{city.country.slug}}" name="country_slug"></input>
           <button type="submit" id="post_button" class="btn btn-warning pull-right" style="margin:1%"><i class="icon-upload icon-white"style="margin-right:5px"></i>Post</button>
+          <button class ="tb">test</button>
           
 
         

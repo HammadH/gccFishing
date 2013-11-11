@@ -11,11 +11,11 @@ from django.template import RequestContext, Context
 from django.core.urlresolvers import reverse
 from wall.models import Wallpost, Comment
 from voting.models import Vote
-
+from django.views.generic.edit import CreateView
 from django.utils import simplejson
 from django.forms.models import model_to_dict
 from django.core import serializers
-
+from django.template.defaultfilters import slugify
 
 from django.contrib.auth import get_user_model
 
@@ -373,6 +373,25 @@ class cityScuba(View):
 		return context
 
 
+
+
+
+class addCity(View):
+	def get(self, request, *args, **kwargs):
+		countries = Country.objects.all()
+		return render_to_response('addCity.html', {'countries':countries}, RequestContext(request))
+
+	def post(self, request, *args, **kwargs):
+		name = request.POST['name']
+		country = Country.objects.get(name=request.POST['country'])
+		image = request.FILES.get('city_image',"Images/Locations/default_city.jpg")
+		city = City.objects.create(name=name, country=country, image= image)
+		if city is not None:
+			
+			return render_to_response("city_created.html")
+		else:
+			
+			return HttpResponse("some error occured! we apologize.. please send us an email regarding this issue and we will fix it. Thank you. ")
 
 
 

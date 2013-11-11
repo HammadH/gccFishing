@@ -25,13 +25,9 @@
 <body>
 <div class="container">
 	<div class="span6" style="text-align:center">
-
-<form  action="" method="post">{% csrf_token %}
-    <ul class="city_details" style="list-style-type:none">
-        <li id="name" class="form-control">{{ form.name }}</li>
-        <li id="image" class="form-control">{{ form.image }}</li>
-        <li id="country" class="form-control">{{ form.country }}</li>
-    </ul>
+<h3> city form</h3>
+<form  action="" method="post" enctype="multi-part/formdata">{% csrf_token %}
+    {{form.as_p}}
     <input type="submit" value="Create" />
 </form>
 </div>

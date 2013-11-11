@@ -8,7 +8,7 @@ admin.autodiscover()
 
 from authtools.urls import *
 from views import mainView, registration, loginView, logoutView, activate, profile,   \
-notifications_view, process_notification_and_redirect_view, indexView, test_jfu, loc, country_select
+notifications_view, process_notification_and_redirect_view, indexView, test_jfu, loc, country_select, EditProfile
 from django.views.generic import TemplateView
 from Locations import urls
 from django.contrib.auth import get_user_model
@@ -17,7 +17,7 @@ from Locations.models import City
 
 import spots
 
-from Locations.views import countryView, process_up_vote, process_down_vote,ajax_Upvote, ajax_Downvote
+from Locations.views import countryView, process_up_vote, process_down_vote,ajax_Upvote, ajax_Downvote, addCity
 
 import notifications
 import uploadify
@@ -78,7 +78,9 @@ urlpatterns = patterns('',
 
     url(r'^country_select', country_select, name='country_select'),
 
-    url(r'^add_city/', CreateView.as_view(model=City)),
+    url(r'^add_city/', addCity.as_view()),
+    url(r'^edit_profile/', EditProfile.as_view(), name="edit_profile"),
+
 
 ) 
 

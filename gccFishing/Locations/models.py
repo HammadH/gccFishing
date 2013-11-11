@@ -53,9 +53,9 @@ class Country(models.Model):
 
 
 class City(models.Model):
-	name = models.CharField("Name of City", max_length=100, unique = True)
+	name = models.CharField("Name of City", max_length=100)
 	image = ImageField(upload_to=image_path)
-	slug = AutoSlugField(populate_from='name')
+	slug = AutoSlugField(populate_from='name', unique = True)
 		
 	
 

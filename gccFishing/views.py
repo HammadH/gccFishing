@@ -220,8 +220,15 @@ def activate(request, activation_key):
 
 
 def profile(request, id):
-	user = User.objects.get(id=id)
-	return render_to_response('profile.html',{'user':user})
+	member = User.objects.get(id=id)
+	return render_to_response('profile.html',{'member':member}, RequestContext(request))
+
+class EditProfile(View):
+	def get(self, request, *args, **kwargs):
+		return render_to_response('edit_profile.html', RequestContext(request))
+
+	def post(self, request, *args, **kwargs):
+		pass
 		 	
 
 
@@ -236,6 +243,7 @@ def process_notification_and_redirect_view(request, notification_id):
 
 def notifications_view(request, user_id):
 	if request.user.is_authenticated():
+		
 		user = User.objects.get(id=user_id)
 		notifications = request.user.notifications.all()
 		city = City.objects.get(id = user.city.id)

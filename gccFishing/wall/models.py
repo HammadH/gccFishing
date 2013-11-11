@@ -151,7 +151,7 @@ def comment_notification_handler(sender, instance, created, **kwargs):
 	timestamp = instance.posted_on
 	
 	if recipient != actor:
-		notify.send(sender= instance, recipient = recipient, actor = actor, verb = verb, action_object=action_object, target=target, timestamp=timestamp)
+		notify.send(sender= instance, recipient = recipient, actor = actor, verb = verb, target=target, timestamp=timestamp)
 	else:
 		pass
 

@@ -1,0 +1,66 @@
+{% extends "profile.html" %}
+
+
+{% block hero %}
+<div class="jumbotron" style="margin-top:40px">
+      <div class="container" >
+       
+         
+        
+         
+      
+         
+
+
+        <div class="col-lg-2" style="background-color:yellow; margin:20px; text-align:center;">
+
+
+
+
+       <h4> {{ user.name }}</h4></a>
+      
+
+
+
+
+        
+
+   <form class="form-profile_image" method="post" enctype="multipart/form-data" url="{% 'change_profile_image' %}">{% csrf_token %}
+
+       <div class="fileupload fileupload-new" data-provides="fileupload" style="text-align:center">
+  <div class="fileupload-new thumbnail" style="width: 150px; height: 150px;">
+   <img src="{{user.image.url}}" /></div>
+  <div class="fileupload-preview fileupload-exists thumbnail" style="max-width:150px;max-height: 150px; line-height: 20px;"></div>
+  <div>
+  <span class="btn btn-file"><span class="fileupload-new"><i class="glyphicon glyphicon-camera"></i></span>
+  <span class="fileupload-exists">Change</span>
+  <input id = "profile_image" name = "image" type="file"/></span>
+  <a id="profile_image_remove" href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+    </div>
+    </div>
+    <button id="profile_image_button" class="btn btn-success btn-sm" type="submit">Save</button>
+       <h5 >{{user.reputation}}</h5>
+     
+
+      </div>
+      <div class="col-lg-2" style="background-color:orange; margin:20px;">
+
+      
+      
+      <h5><b>{{member.city}}</b>, {{member.country}} </h5>
+      <h5>{{member.email}}</h5>
+      <h5>Member since: {{member.date_joined|timesince}}</h5>
+
+      </div>
+        
+      <div class="col-lg-2" style="background-color:orange;margin:20px;">
+        <h5>Last seen:</h5>
+        <h5>No. of posts created: {{user.posts.count}}</h5>
+        <h5>No. of fishing spots marked:</h5>
+      </div>
+
+       <p class="pull-right"><a href="{% url 'insideCity_wall' user.country.slug user.city.slug %}" class="btn btn-warning"  style="margin-bottom:-400px";>Back to Wall &raquo;</a></p>
+
+
+
+       {%endblock%}
