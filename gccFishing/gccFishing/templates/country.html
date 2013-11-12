@@ -37,6 +37,7 @@
   {% block main %}
  <div class="container">
       <!-- Example row of columns -->
+<<<<<<< HEAD
       {% if country.cities.count == 0 %}
 
       <h3 style="text-align:center"><a href="/add_city">Create your city</a><h3>
@@ -44,6 +45,13 @@
        {% else %}
 
 
+=======
+     {% if country.cities.count == 0 %}
+	<p><i>No cities have been created for {{country}} yet. You can get started by creating your city and people from that city will join in.</i></p><p><i> Inside the city you can share photos of fishes you catch, helpful information and best fishing spots with the people of your city. Offshore fishing packages and Scuba diving packages in your city can also be found. You can also buy or sell your fishing gear under the 'Buy/Sell' tab. Just post the stuff you want to sell and people of your city will know. </i></p>  
+      <span class="badge pull-right" style="background-color:orange"><h4 ><a href ="/add_city" style="text-decoration:none;color:white;">Click here to add your city</a></h4></span>
+       {% else %}
+
+>>>>>>> b1ca307aeb020a48930dc0865008c5f3e3f537b4
         {% for city in cities %}
       
   
@@ -81,8 +89,15 @@
     
         </div>
         {% endfor %}
+<div class="pull-right">	
+<p><i> Inside a city you can share photos of fishes you catch, helpful information and best fishing spots with the people of that city. Offshore fishing packages and Scuba diving packages in that city can also be found. You can also buy or sell your fishing gear under the 'Buy/Sell' tab. Just post the stuff you want to sell and people of that city will know. </i></p>
 
+<<<<<<< HEAD
    <span class="badge pull-right" style="background-color:orange"><h4 ><a href ="/add_city" style="text-decoration:none;color:white;">Click here to add your city</a></h4></span>
+=======
+	<span class="badge pull-right" style="background-color:orange"><h4 ><a href ="/add_city" style="text-decoration:none;color:white;">Click here to add your city</a></h4></span>
+</div>
+>>>>>>> b1ca307aeb020a48930dc0865008c5f3e3f537b4
     {% endif %}
     </div> <!-- /container -->
 

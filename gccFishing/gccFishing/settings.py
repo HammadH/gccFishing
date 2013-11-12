@@ -17,10 +17,10 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'new_db',                      # Or path to database file if using sqlite3.
+        'NAME': 'gccfishingdb',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': 'Hammad',
-        'PASSWORD': 'hammad',
+        'USER': 'hammad',
+        'PASSWORD': 'quakeroats9',
         'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '5432',  
         'OPTIONS': {'autocommit': True,},                    # Set to empty string for default.
@@ -158,9 +158,13 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 ACCOUNT_ACTIVATION_DAYS = 7
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #EMAIL_FILE_PATH = '/home/hammad/virt_env/virt1/gccFishing/test emails/'
-
+EMAIL_HOST = 'smtp.webfaction.com'
+EMAIL_HOST_USER='gccfishing'
+EMAIL_HOST_PASSWORD='quakeroats9'
+DEFAULT_FROM_EMAIL = 'registration@gccfishing.com'
+SERVER_EMAIL = 'registration@gccfishing.com'
 
 AUTH_USER_MODEL = 'authtools.User'
 

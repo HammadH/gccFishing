@@ -49,7 +49,7 @@ urlpatterns = patterns('',
     url(r'^about/', TemplateView.as_view(template_name='about.html'), name = 'about'),
     url(r'^contact/', TemplateView.as_view(template_name='contact.html'), name = 'contact'),
 
-    
+ 
 
     url(r'^activate/(?P<activation_key>\w+)/$', activate, name='activation'),			
 
@@ -79,8 +79,11 @@ urlpatterns = patterns('',
     url(r'^country_select', country_select, name='country_select'),
 
     url(r'^add_city/', addCity.as_view()),
+<<<<<<< HEAD
     url(r'^edit_profile/', EditProfile.as_view(), name="edit_profile"),
 
+=======
+>>>>>>> b1ca307aeb020a48930dc0865008c5f3e3f537b4
 
 ) 
 

@@ -1,11 +1,11 @@
 
 
-Hi , please click on the link below to activate your account at the Gulf Fishing Community.
+Hi, thank you for joining Gulf Fishing Club. Please click on the link below to activate your account.
 
 
-http://127.0.0.1:8000{% url 'activation'  activation_key %}
+http://www.gccfishing.com{% url 'activation'  activation_key %}
 
 
-Note: This email expires after  from today.
+Note: This email expires after {{expiration_days}} days from today.
 
 

@@ -108,6 +108,7 @@
       });
 
 
+<<<<<<< HEAD
 
    $('#post_button').prop('disabled', true);
 
@@ -130,10 +131,32 @@ $('#wallimage').change(function(){
 });
 
     });
+=======
+>>>>>>> b1ca307aeb020a48930dc0865008c5f3e3f537b4
+  
   
 
 
+	$('#post_button').prop('disabled', true);
 
+   $('#wallpost').on("propertychange input textInput", function(){
+    if($('#wallpost').val() != '')
+    {
+       $('#post_button').prop('disabled', false);
+    } else 
+    {
+      $('#post_button').prop('disabled', true);
+    }
+   });
+   
+
+
+   
+$('#wallimage').change(function(){
+
+  $('#wallpost').attr("placeholder", "YOU NEED TO SAY SOMETHING HERE. TRY TO PROVIDE INFORMATION THAT WILL BE HELPFUL TO OTHERS");
+});
+});
 
   </script>
 
@@ -240,7 +263,7 @@ $('#wallimage').change(function(){
             <textarea  rows = "3" id="wallpost" name="wallpost" class="input-block-level" placeholder="Lets fish together - POST AWAY!" style="border:solid 1px" autofocus></textarea>
           
           
-          <input type="file" name="wallimage" id="wallimage">
+          <input title = "Upload Pictures" type="file" name="wallimage" id="wallimage">
 
           <input type="hidden" id="city_slug" value = "{{city.slug}}" name="city_slug"></input>
           <input type="hidden" id = "country_slug" value = "{{city.country.slug}}" name="country_slug"></input>
@@ -274,15 +297,17 @@ $('#wallimage').change(function(){
               <img src = "{{im.url}}" width="{{im.width}}" height="{{im.height}}">
             {% endthumbnail %}
             <li >{{post.author.name}}</li></a>
-            <li style="font-size:10px"><b>{{post.author.reputation}}</b></li>
-        </ul>
+    
+	 <li title="User reputation" style="font-size:10px"><b>{{post.author.reputation}}</b></li>
+       
+	 </ul>
             
         {% if post.image %}
 
         <div style="text-align:center; margin:20px;" >
-              
-        <a href="{{post.image.url}}"><img src= "{{post.image.url}}" ></a>
-              
+         {% thumbnail post.image "300x300" crop="center" as im %}     
+        <a href="{{post.image.url}}"><img src= "{{im.url}}" width="{{im.width}}" height="{{im.height}}"></a>
+         {% endthumbnail %}     
         </div>
         
         <div class="panel panel-default" style="padding:1%;" >
@@ -302,10 +327,14 @@ $('#wallimage').change(function(){
             
         
          
-         
+         {% if post.get_comments_count == 1%}
+
+
+         <a href="{% url 'conversation' country_slug=post.country.slug city_slug=post.city.slug post_id=post.id %}"><button type="button" class="btn btn-warning pull-right" style="margin:1%"><b >{{post.get_comments_count}}</b> Comment &raquo;</button></a>
+	{% else %}
 
          <a href="{% url 'conversation' country_slug=post.country.slug city_slug=post.city.slug post_id=post.id %}"><button type="button" class="btn btn-warning pull-right" style="margin:1%"><b >{{post.get_comments_count}}</b> Comments &raquo;</button></a>
-
+	{% endif %}
  <div class="pull-right" style="margin:5px"><span class="badge badge-success">Posted {{post.posted_on|timesince}} ago</span>
        </div>
         
@@ -313,7 +342,7 @@ $('#wallimage').change(function(){
      
 
       <div class="pull-left">
-      <input type="image" src="/media/Images/up.png" class="upButton" data-id="{{post.id}}" style="margin-right:5px">{% csrf_token %}</input>
+      <input title="Vote Up" type="image" src="/media/Images/up.png" class="upButton" data-id="{{post.id}}" style="margin-right:5px">{% csrf_token %}</input>
       </div>
  
       
@@ -321,9 +350,9 @@ $('#wallimage').change(function(){
       <div class="pull-left"><span class="badge" style="background-color:orange; width:30px; height:30px; text-align:center" ><p class="post-points" data-id="{{post.id}}" style="margin:5px; font-size:12px">{{post.points}}</p></span>
       </div>
 
-      <div class="pull-left">
-        <input type="image" src="/media/Images/down.png" class="downButton" data-id="{{post.id}}" style="margin-left:5px; ">{% csrf_token %}</input>
-      </div>
+ <!--     <div class="pull-left">
+       <input type="image" src="/media/Images/down.png" class="downButton" data-id="{{post.id}}" style="margin-left:5px; ">{% csrf_token %}</input>
+      </div> -->
     
     </div>
   

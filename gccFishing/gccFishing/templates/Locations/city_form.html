@@ -25,10 +25,22 @@
 <body>
 <div class="container">
 	<div class="span6" style="text-align:center">
+<<<<<<< HEAD
 <h3> city form</h3>
 <form  action="" method="post" enctype="multi-part/formdata">{% csrf_token %}
     {{form.as_p}}
     <input type="submit" value="Create" />
+=======
+<h3 style="text-align:center">Add your city</h3>
+<form  action="" method="post">{% csrf_token %}
+    <ul class="city_details" style="list-style-type:none; margin:10px;">
+        <li id="name" class="form-control" style="margin:10px">City Name:{{ form.name }}</li>
+        <li id="country" class="form-control" style="margin:10px">Choose country:{{ form.country }}</li>
+    
+        <li id="image" class="" style="margin:10px">Add picture:{{ form.image }}</li>
+    </ul>
+    <input type="submit" value="Create" style="text-align:center" />
+>>>>>>> b1ca307aeb020a48930dc0865008c5f3e3f537b4
 </form>
 </div>
 </div>

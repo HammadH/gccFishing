@@ -374,7 +374,23 @@ class cityScuba(View):
 
 
 
+class addCity(View):
+	def get(self, request, *args, **kwargs):
+		countries = Country.objects.all()
+		return render_to_response('addCity.html', {'countries':countries}, RequestContext(request))
 
+	def post(self, request, *args, **kwargs):
+
+		
+			
+		name = request.POST['name']
+		country = Country.objects.get(name=request.POST['country'])
+		image = request.FILES.get('city_image', 'Images/Locations/default_city.jpg')		 
+		city = City.objects.create(name=name, country=country, image=image)
+		if city is not None:
+			return render_to_response("city_created.html")
+		else:
+			return HttpResponse("some error occured! we apologize.. please report to us and we will fix it")
 
 class addCity(View):
 	def get(self, request, *args, **kwargs):
