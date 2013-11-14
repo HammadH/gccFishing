@@ -15,9 +15,9 @@ from django.contrib.auth import get_user_model
 from django.views.generic.edit import CreateView
 from Locations.models import City
 
-import spots
 
 from Locations.views import countryView, process_up_vote, process_down_vote,ajax_Upvote, ajax_Downvote, addCity
+from hitcount.views import update_hit_count_ajax
 
 import notifications
 import uploadify
@@ -53,7 +53,8 @@ urlpatterns = patterns('',
 
     url(r'^activate/(?P<activation_key>\w+)/$', activate, name='activation'),			
 
-    url(r'^profile/(?P<id>\d+)/$', profile, name = 'profile'),	
+    url(r'^profile/(?P<id>\d+)/$', profile, name = 'profile'),
+    url(r'^profile/(?P<id>\d+)/edit_profile/$', EditProfile.as_view(), name="edit_profile"),  	
        
 	url(r'^processing_notification/(?P<notification_id>\d+)/', process_notification_and_redirect_view, name = 'process_notification'),
    
@@ -61,7 +62,7 @@ urlpatterns = patterns('',
  
     
     url(r'^locations/', include('Locations.urls'), name= 'locations'),
-    url(r'^locations/(?P<country_slug>[\w-]+)/(?P<city_slug>[\w-]+)/spots/', include(spots.urls)),
+    url(r'^locations/(?P<country_slug>[\w-]+)/(?P<city_slug>[\w-]+)/spots/', include('spots.urls')),
 
     url(r'voteup/(?P<post_id>\d+)/', process_up_vote, name='upvote'),
     url(r'voteU/', ajax_Upvote, name='upvote_ajax'),
@@ -79,11 +80,12 @@ urlpatterns = patterns('',
     url(r'^country_select', country_select, name='country_select'),
 
     url(r'^add_city/', addCity.as_view()),
-<<<<<<< HEAD
-    url(r'^edit_profile/', EditProfile.as_view(), name="edit_profile"),
 
-=======
->>>>>>> b1ca307aeb020a48930dc0865008c5f3e3f537b4
+    url(r'^edit_profile/change_image', EditProfile.as_view(), name="change_profile_image"),
+
+    url(r'^ajax/hit/$', update_hit_count_ajax, name='hitcount_update_ajax'),
+
+
 
 ) 
 

@@ -221,14 +221,37 @@ def activate(request, activation_key):
 
 def profile(request, id):
 	member = User.objects.get(id=id)
-	return render_to_response('profile.html',{'member':member}, RequestContext(request))
+	member_catches = member.posts.exclude(image='')[:40]
+	row_1 = member_catches[0:10]
+	row_2 = member_catches[11:20]
+	row_3 = member_catches[21:30]
+	row_4 = member_catches[31:40]
+
+	return render_to_response('profile.html',{'member':member, 'row_1':row_1, 'row_2':row_2,'row_3':row_3, 'row_4':row_4}, RequestContext(request))
 
 class EditProfile(View):
 	def get(self, request, *args, **kwargs):
-		return render_to_response('edit_profile.html', RequestContext(request))
+		member = User.objects.get(id=kwargs['id'])
+		
+		countries = Country.objects.all()
+		cities = City.objects.all()
+		context={}
+		context['member'] = member
+		context['countries']=countries
+		context['cities']=cities
+		return render_to_response('edit_profile.html', context, RequestContext(request))
 
 	def post(self, request, *args, **kwargs):
-		pass
+		user = User.objects.get(id=request.user.id)
+		previous_image = user.image
+		print previous_image.url
+		user.name = request.POST['name']
+		user.image = request.FILES.get('image', previous_image)
+		user.email = request.POST['email']
+		user.country = Country.objects.get(name=request.POST['country'])
+		user.city = City.objects.get(name=request.POST['city'])
+		user.save()
+		return HttpResponseRedirect(reverse('profile', args=(user.id,)))
 		 	
 
 
