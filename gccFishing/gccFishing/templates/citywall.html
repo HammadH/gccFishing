@@ -31,7 +31,8 @@
     
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    
+     <script src="http://maps.googleapis.com/maps/api/js?key=
+AIzaSyDEW2QDwkdVa8eci2h0T3B_iF4nQXdqbqU&sensor=false"></script>
 
     
     
@@ -42,6 +43,22 @@
     <![endif]-->
  <script>
     
+var map, marker, waypointByID = {};
+
+function initialize()
+{
+var mapProp = {
+  center:new google.maps.LatLng(27.012909,49.657731),
+  zoom:6,
+  mapTypeId:google.maps.MapTypeId.ROADMAP
+  };
+map=new google.maps.Map(document.getElementById("googleMap")
+  ,mapProp);
+var weatherLayer = new google.maps.weather.WeatherLayer({
+
+});
+weatherLayer.setMap(map);
+}
 
 
 
@@ -130,16 +147,45 @@ $('#wallimage').change(function(){
   $('#wallpost').attr("placeholder", "YOU NEED TO SAY SOMETHING HERE. TRY TO PROVIDE INFORMATION THAT WILL BE HELPFUL TO OTHERS");
 });
 
-    });
+    
 
+  function activateWaypoints() {
+        // Add waypoint click handler
+        $('.waypoint').each(function () {
+            
+                var waypoint = waypointByID[this.id];
+               
+                var center = new google.maps.LatLng(waypoint.lat, waypoint.lng);
+                
+                var spot = new google.maps.Marker({
+                  position: center,
+                  map: map,
+                  
+                });
+            });
+        
+        }
+   activateWaypoints();
   
+
+     });  //document.ready()
+
+  google.maps.event.addDomListener(window, 'load', initialize);
   
+
 
 
 
   </script>
 
 
+<style>
+    body {font-family: sans-serif}
+    #map {width: 500px; height: 300px}
+    #waypoints {overflow: auto; width: 500px; height: 100px}
+    .linkOFF {color: darkblue}
+    .linkON {color: white; background-color: darkblue}
+</style>
 
 
   </head>
@@ -147,39 +193,25 @@ $('#wallimage').change(function(){
 
 
 
-<body>
+<body onload="init()">
 
             
     
 
 
 
-{% block hero %}
+{{% block hero %}
+<div style="text-align:center; margin-top:70px; margin-bottom:-20px"><h4>Fishing spots in {{city}}</h4></div>
 
-<div class="jumbotron" style="margin-top:40px;height:450px; background-image:url('/media/Images/fishes.jpg');background-repeat:no-repeat; background-size:cover;background-position:center;">
-      <div class="container">
-      {% if user.is_authenticated and city != user.city %} 
-       <ul class="pager" style="margin-left:-80px; margin-top:-30px">
-  <li class="previous"><a href="/locations/{{user.country.slug}}/{{user.city.slug}}/wall" style="font-size:14px">&larr; Back to {{user.city}}</a></li>
-  {%endif%}
-</ul>
-       
+<div class="jumbotron" style="margin-top:40px; height:380px" id="googleMap">
+      <div class="container" >
+       <ul class = "nav pull-left" style="padding: 2%">
        <img src= "/media/fishing_logo.png" height="100px" width="100px">
+       </ul>
+        
+        
+       
       
-        <h1>Fishing in {{city}}</h1>
-        <p>Share information - Ask questions - Upload catches</p>
-        {% if user.is_authenticated %}
-        
-        {% else %}
-        
-
-        <ul class = "nav pull-right">
-        <p><a href="/register" class="btn btn-warning ">Join for FREE! &raquo;</a></p>
-        </ul>
-
-
-      {% endif %}
-     
 
 
       </div>
@@ -200,9 +232,9 @@ $('#wallimage').change(function(){
 
 {% block main %}
 
-<div class="mainblock">
 
-<div class="container" style="margin-left:20%; margin-right:20%;">
+
+<div class="container" style="background-color:">
       <!-- Example row of columns -->
    <ul class="nav nav-tabs" >
   <li class="active" ><a href="{% url 'insideCity_wall' city.country.slug city.slug %}"><img src = "/media/Images/wall.png" style="margin-right:5px"> Wall</a></li>
@@ -233,9 +265,13 @@ $('#wallimage').change(function(){
 </ul>   
     
 
-<div class="row marketing" style = "padding-top:10px;border:dotted 1px">
+<div class="row marketing" >
+  <div class="col-lg-2">
+{{request.online.users}}
 
-<div class="container"style="background-color:" >
+  </div>
+
+<div class="col-lg-6"style="background-color:" >
       
           <form method="post" id ="wallpost_form" enctype="multipart/form-data">{% csrf_token %}
              
@@ -255,20 +291,25 @@ $('#wallimage').change(function(){
           </form>
          
       </div>
+
+<div class="col-lg-4">
+  </div>
+
       </div>
     
     <hr>
     <hr>
 
-{% paginate posts %}
+<div class="col-lg-2">
+</div>
 
-<div class="posts">
+<div class="col-lg-6">
+ {% paginate posts %}
 {% for post in posts %}
         
-      
-
-      
-        <div class="panel-body" data-id="{{post.id}}" style="border:solid 1px; border-color:#0B3861; background-color:">
+    
+       
+       <div class="panel-body" data-id="{{post.id}}" style="border:solid 1px; border-color:#0B3861; background-color:">
           
          <a href="{% url 'profile' post.author.id %}" style="text-decoration:none"> 
         <ul class="nav pull-left" style="text-align:center">
@@ -284,9 +325,7 @@ $('#wallimage').change(function(){
         {% if post.image %}
 
         <div style="text-align:center; margin:20px;" >
-         {% thumbnail post.image "300x300" crop="center" as im %}     
-        <a href="{{post.image.url}}"><img src= "{{im.url}}" width="{{im.width}}" height="{{im.height}}"></a>
-         {% endthumbnail %}     
+        <a href="{{post.image.url}}"><img src= "{{post.image.url}}" style="max-width:100%;max-height:100%;" ></a>     
         </div>
         
         <div class="panel panel-default" style="padding:1%;" >
@@ -332,25 +371,40 @@ $('#wallimage').change(function(){
  <!--     <div class="pull-left">
        <input type="image" src="/media/Images/down.png" class="downButton" data-id="{{post.id}}" style="margin-left:5px; ">{% csrf_token %}</input>
       </div> -->
+      
+     
+     </div>
+     
+     
+     
+
+      
+
     
-    </div>
   
 
   <hr>
+  
   {% endfor %}
 
 
 
-  
-<div class="pagination">  
+  <div style="text-align:center; font-size:20px;">
+<div class="pagination" >  
 
 {% show_pages %}
 
 </div> <!--container-->
 
-  
- </div> <!--main block-->
+  </div>
 </div>
+
+</div>
+  
+
+
+
+
 
   {% endblock %}
 

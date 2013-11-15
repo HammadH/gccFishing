@@ -135,6 +135,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'onlinecounter.middleware.OnlineCounterMiddleware',
     
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -196,6 +197,7 @@ INSTALLED_APPS = (
     'spots',
     'geoposition',
     'hitcount',
+    'onlinecounter',
 
 
 )
