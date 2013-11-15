@@ -136,26 +136,6 @@ $('#wallimage').change(function(){
   
 
 
-	$('#post_button').prop('disabled', true);
-
-   $('#wallpost').on("propertychange input textInput", function(){
-    if($('#wallpost').val() != '')
-    {
-       $('#post_button').prop('disabled', false);
-    } else 
-    {
-      $('#post_button').prop('disabled', true);
-    }
-   });
-   
-
-
-   
-$('#wallimage').change(function(){
-
-  $('#wallpost').attr("placeholder", "YOU NEED TO SAY SOMETHING HERE. TRY TO PROVIDE INFORMATION THAT WILL BE HELPFUL TO OTHERS");
-});
-});
 
   </script>
 
@@ -267,7 +247,7 @@ $('#wallimage').change(function(){
           <input type="hidden" id="city_slug" value = "{{city.slug}}" name="city_slug"></input>
           <input type="hidden" id = "country_slug" value = "{{city.country.slug}}" name="country_slug"></input>
           <button type="submit" id="post_button" class="btn btn-warning pull-right" style="margin:1%"><i class="icon-upload icon-white"style="margin-right:5px"></i>Post</button>
-          <button class ="tb">test</button>
+          
           
 
         
