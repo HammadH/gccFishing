@@ -1,6 +1,6 @@
 Django==1.5.1
-PIL==1.1.7
-South==0.8.2
+Pillow==2.2.1
+South==0.8.3
 argparse==1.2.1
 django-autoslug==1.7.1
 django-crispy-forms==1.4.0
@@ -12,6 +12,7 @@ django-jfu==1.0.7
 django-model-utils==1.5.0
 django-notifications-hq==0.6.0
 django-smart-selects==1.0.9
+django-taggit==0.10
 pgmagick==0.5.7
 psycopg2==2.5.1
 python-memcached==1.53
