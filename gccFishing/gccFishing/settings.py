@@ -197,6 +197,7 @@ INSTALLED_APPS = (
     'spots',
     'geoposition',
     'hitcount',
+    'taggit',
    
 
 

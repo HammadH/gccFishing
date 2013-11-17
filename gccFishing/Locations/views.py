@@ -110,11 +110,26 @@ class citywall(View):
 		except City.DoesNotExist:
 			return None
 		context['city'] = city
+		
+		if city.ltd and city.lng:
+			city_map_ltd = self.convert_string_to_float(city.ltd)
+			city_map_lng = self.convert_string_to_float(city.lng)
+		
+			context['city_map_ltd'] =city_map_ltd  # required for google map
+			context['city_map_lng'] =city_map_lng
+
 		context['posts'] = city.posts.order_by('-posted_on')[:25] 
 		context['members_count'] = city.members.count()
-		context['members'] = city.members.order_by('reputation')
+		context['members'] = city.members.order_by('-reputation')
 		#context['spots']
 		return context
+
+
+	def convert_string_to_float(self, string):
+		import re
+		r = re.compile(r'(\d+\.\d+)')
+		temp = float(r.match(string).group(1))
+		return temp
 
 
 
@@ -123,15 +138,23 @@ class citywall(View):
 		text = request.POST.get('wallpost')
 		image = request.FILES.get('wallimage', '')
 		user = request.user
+		tags= request.POST.get('tags','')
+		tags_parsed = self.parse_tags(tags)
 		city_slug = request.POST.get('city_slug')
 		city = City.objects.get(slug=city_slug)
 		country_slug = request.POST.get('country_slug')
 		country = Country.objects.get(slug=country_slug)
 		try:
 			post = Wallpost.objects.create_post(user, country, city, image, text)   # post is object
+			for tag in tags_parsed:
+				post.tags.add(tag)
 		except:
 			return HttpResponse('some error in posting')
 		return post
+
+	def parse_tags(self, tags):
+		parsed_tags = tags.split()
+		return parsed_tags
 
 
 
@@ -385,29 +408,16 @@ class addCity(View):
 			
 		name = request.POST['name']
 		country = Country.objects.get(name=request.POST['country'])
-		image = request.FILES.get('city_image', 'Images/Locations/default_city.jpg')		 
-		city = City.objects.create(name=name, country=country, image=image)
+		image = request.FILES.get('city_image', 'Images/Locations/default_city.jpg')
+		lng = request.POST.get('lng', '')
+		ltd = request.POST.get('ltd', '')		 
+		city = City.objects.create(name=name, country=country, image=image, lng=lng, ltd=ltd)
 		if city is not None:
 			return render_to_response("city_created.html")
 		else:
 			return HttpResponse("some error occured! we apologize.. please report to us and we will fix it")
 
-class addCity(View):
-	def get(self, request, *args, **kwargs):
-		countries = Country.objects.all()
-		return render_to_response('addCity.html', {'countries':countries}, RequestContext(request))
 
-	def post(self, request, *args, **kwargs):
-		name = request.POST['name']
-		country = Country.objects.get(name=request.POST['country'])
-		image = request.FILES.get('city_image',"Images/Locations/default_city.jpg")
-		city = City.objects.create(name=name, country=country, image= image)
-		if city is not None:
-			
-			return render_to_response("city_created.html")
-		else:
-			
-			return HttpResponse("some error occured! we apologize.. please send us an email regarding this issue and we will fix it. Thank you. ")
 
 
 

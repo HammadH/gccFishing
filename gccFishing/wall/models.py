@@ -12,6 +12,7 @@ from django.contrib.contenttypes import generic
 from Locations.models import City, Country 
 
 from notifications import notify
+from taggit.managers import TaggableManager
 
 
 User = get_user_model()
@@ -59,6 +60,7 @@ class Wallpost(models.Model):
 	text = models.TextField(null = True, blank = True) #should be made to show only little text
 	
 	objects = WallpostManager()
+	tags = TaggableManager()
 
 	def __unicode__(self):
 		return u"post of %s" %self.author.name

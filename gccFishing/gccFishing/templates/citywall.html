@@ -26,13 +26,15 @@
      <link href="{% static "styles-blue.css" %}" rel="stylesheet">
     <link href="{% static "bootstrap.min.css" %}" rel="stylesheet">
     <link href="{% static "city.css" %}" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Cookie' rel='stylesheet' type='text/css'>
    
     <!-- Custom styles for this template -->
     
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
      <script src="http://maps.googleapis.com/maps/api/js?key=
-AIzaSyDEW2QDwkdVa8eci2h0T3B_iF4nQXdqbqU&sensor=false"></script>
+AIzaSyDEW2QDwkdVa8eci2h0T3B_iF4nQXdqbqU&sensor=false&libraries=weather"></script>
 
     
     
@@ -48,16 +50,20 @@ var map, marker, waypointByID = {};
 function initialize()
 {
 var mapProp = {
-  center:new google.maps.LatLng(27.012909,49.657731),
-  zoom:6,
+  center:new google.maps.LatLng({{city_map_ltd}},{{city_map_lng}}),
+  zoom:11,
   mapTypeId:google.maps.MapTypeId.ROADMAP
   };
+
 map=new google.maps.Map(document.getElementById("googleMap")
   ,mapProp);
-var weatherLayer = new google.maps.weather.WeatherLayer({
 
+var weatherLayer = new google.maps.weather.WeatherLayer({
+  temperatureUnits: google.maps.weather.TemperatureUnit.CELCIUS
 });
 weatherLayer.setMap(map);
+
+
 }
 
 
@@ -118,7 +124,7 @@ weatherLayer.setMap(map);
         });
 {% else %}
 
-        alert("Please login to Vote");
+      
 
         {% endif %}
      
@@ -130,14 +136,29 @@ weatherLayer.setMap(map);
    $('#post_button').prop('disabled', true);
 
    $('#wallpost').on("propertychange input textInput", function(){
-    if($('#wallpost').val() != '')
+  
+  {% if user.is_authenticated %}
+
+   if($('#wallpost').val() != '')
     {
        $('#post_button').prop('disabled', false);
     } else 
     {
       $('#post_button').prop('disabled', true);
     }
-   });
+  
+    {% else %}
+
+      function showAlert() {
+    $("#myAlert").addClass("in");
+}
+
+window.setTimeout(function () {
+    showAlert();
+}, 2000);
+
+  {% endif %}
+  });
    
 
 
@@ -180,11 +201,25 @@ $('#wallimage').change(function(){
 
 
 <style>
+    
+
     body {font-family: sans-serif}
     #map {width: 500px; height: 300px}
     #waypoints {overflow: auto; width: 500px; height: 100px}
     .linkOFF {color: darkblue}
     .linkON {color: white; background-color: darkblue}
+
+     .fade {
+    opacity: 0;
+    -webkit-transition: opacity 0.15s linear;
+    -moz-transition: opacity 0.15s linear;
+    -o-transition: opacity 0.15s linear;
+    transition: opacity 0.15s linear;
+}
+.fade.in {
+    opacity: 1;
+}
+
 </style>
 
 
@@ -201,22 +236,44 @@ $('#wallimage').change(function(){
 
 
 {{% block hero %}
-<div style="text-align:center; margin-top:70px; margin-bottom:-20px"><h4>Fishing spots in {{city}}</h4></div>
 
-<div class="jumbotron" style="margin-top:40px; height:380px" id="googleMap">
-      <div class="container" >
-       <ul class = "nav pull-left" style="padding: 2%">
-       <img src= "/media/fishing_logo.png" height="100px" width="100px">
-       </ul>
-        
-        
-       
-      
+<div class="container">
+ 
+  <div class="row-fluid">
 
 
-      </div>
+<div style="text-align:center; margin-top:70px; margin-bottom:-20px"> <h3><img src = "/media/fishing_logo.png" style="width:90px;height:90px;">Fishing in <b>{{city}}</b></34></div>
+ 
+
+ <div class="col-sm-2" style="height:370px;  overflow-y:auto; margin-right:10px; margin-bottom:10px;">
+  
+    
+  <table >
+   <p style="text-align:center"><b>{{city.name}}</b> members</p>
+  <hr>
+  {% for member in members %}
+    <tr >
+    <td ><a href = "{% url 'profile' member.id %}">{% thumbnail member.image "30x30" crop="center" as im %}
+    <img src ="{{im.url}}" width="{{im.width}}" height="{{im.height}}">
+    {% endthumbnail %}</a>
+      </td>
+     <td title = "name" style="text-align:center; font-size:12px"> <a href = "{% url 'profile' member.id %}">{{member.name}} </a></td>
+      <td title = "reputation" style="text-align:center; font-size:11px;"><b>{{member.reputation}}</b>
+    </td>
+    </tr>  
+  {% endfor %}
+ </table>
+</div>
+
+
+
+
+ <h6 style="margin-bottom:-35px">Fishing spots in <b>{{city}}</b> <p style="color:red">Coming Soon</p></h6>
+<div class="col-lg-6" style="margin-top:40px; height:380px" id="googleMap">
+    
     </div>
-
+</div>
+</div>
 {% endblock %}
 
 
@@ -236,15 +293,16 @@ $('#wallimage').change(function(){
 
 <div class="container" style="background-color:">
       <!-- Example row of columns -->
+   <div style="text-align:center">
    <ul class="nav nav-tabs" >
   <li class="active" ><a href="{% url 'insideCity_wall' city.country.slug city.slug %}"><img src = "/media/Images/wall.png" style="margin-right:5px"> Wall</a></li>
-  <li><a href="/locations/{{city.country.slug}}/{{city.slug}}/spots"><img src = "/media/Images/spots.png" style="margin-right:5px"> Fishing Spots</a></li>
+ 
   
   <li><a href="{% url 'insideCity_items' city.country.slug city.slug %}"><img src = "/media/Images/rod.png" style=" width:35px; height:35px;margin-right:5px; margin-bottom:-10px"> Buy/Sell</a></li>
 <li><a href="{% url 'insideCity_offshore' city.country.slug city.slug %}"><img src = "/media/Images/offshore.png" style="margin-right:5px"> Offshore</a></li>
 <li><a href="{% url 'insideCity_fishes' city.country.slug city.slug %}"><img src = "/media/Images/fishes.png" style="margin-right:5px"> Fishes</a></li>
 <li ><a href="{% url 'insideCity_scuba' city.country.slug city.slug %}"><img src = "/media/Images/scuba.png" style="margin-right:5px"> Scuba diving</a></li>
-
+  </div>
   
   {% if user.is_authenticated and city == user.city %}
   {% notifications_unread as unread_count %}
@@ -266,14 +324,23 @@ $('#wallimage').change(function(){
     
 
 <div class="row marketing" >
-  <div class="col-lg-2">
 
+<div class="col-lg-2" >
+<div style="width: 170px;"><div id="frmdr"></div>
+<a href="http://www.fishingreminder.com" title="best fishing times"></a></div>
+<script>function frmcallback(data){ document.getElementById('frmdr').innerHTML = data.html; }</script>
+<script type="text/javascript" src="http://www.fishingreminder.com/widgets/fishing_times_plain/gettimes.php?lat={{city.ltd}}&lng={{city.lng}}"></script>
 
   </div>
 
-<div class="col-lg-6"style="background-color:" >
-      
-          <form method="post" id ="wallpost_form" enctype="multipart/form-data">{% csrf_token %}
+
+<div class="col-lg-6"style="background-color: #EFF2F3; " >
+        
+
+        <div style="margin-bottom:50px;">
+         
+           <h5 style="text-align:center; font-family:'Cookie',cursive; font-size:x-large;">Post photos-Share information-Ask questions</h5>
+          <form method="post" id ="wallpost_form" enctype="multipart/form-data" style="margin:15px">{% csrf_token %}
              
             <textarea  rows = "3" id="wallpost" name="wallpost" class="input-block-level" placeholder="Lets fish together - POST AWAY!" style="border:solid 1px" autofocus></textarea>
           
@@ -282,35 +349,39 @@ $('#wallimage').change(function(){
 
           <input type="hidden" id="city_slug" value = "{{city.slug}}" name="city_slug"></input>
           <input type="hidden" id = "country_slug" value = "{{city.country.slug}}" name="country_slug"></input>
-          <button type="submit" id="post_button" class="btn btn-warning pull-right" style="margin:1%"><i class="icon-upload icon-white"style="margin-right:5px"></i>Post</button>
           
           
+          <div class="form-group" style="margin:10px">
+                        
+                        <div class="input-group">
 
-        
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-tags"></span></span>
+                            <input type="text" class="form-control" name='tags' id="tags" placeholder="Barracuda Shrimp Port-side
+                            "
+                                 />
+                        </div>
+                    </div>
+
+        <button type="submit" id="post_button" class="btn btn-warning pull-right" style= "margin:1%"><i class="icon-upload icon-white"style="margin-right:5px"></i>Post</button>
           
-          </form>
-         
-      </div>
+          </form> 
+        <div id="myAlert" class="alert alert-danger fade" data-alert="alert" style="width:250px;">You are not logged in!</div>
+        </div>
+          
 
-<div class="col-lg-4">
-  </div>
+          
+          {% paginate posts %}
 
-      </div>
-    
-    <hr>
-    <hr>
+         {% for post in posts %}
 
-<div class="col-lg-2">
-</div>
 
-<div class="col-lg-6">
- {% paginate posts %}
-{% for post in posts %}
-        
-    
+
        
-       <div class="panel-body" data-id="{{post.id}}" style="border:solid 1px; border-color:#0B3861; background-color:">
-          
+   
+       
+       <div class="panel-body" data-id="{{post.id}}" style="border:; border-color:#0B3861; background-color:#D7DADB">
+     
+     
          <a href="{% url 'profile' post.author.id %}" style="text-decoration:none"> 
         <ul class="nav pull-left" style="text-align:center">
             {% thumbnail post.author.image "50x50" crop="center" as im %}
@@ -318,12 +389,12 @@ $('#wallimage').change(function(){
             {% endthumbnail %}
             <li >{{post.author.name}}</li></a>
     
-	 <li title="User reputation" style="font-size:10px"><b>{{post.author.reputation}}</b></li>
+             <li title="User reputation" style="font-size:10px"><b>{{post.author.reputation}}</b></li>
        
-	 </ul>
-            
+       </ul>
+       
         {% if post.image %}
-
+        <div class="col-lg-8" style="background-color:">
         <div style="text-align:center; margin:20px;" >
         <a href="{{post.image.url}}"><img src= "{{post.image.url}}" style="max-width:100%;max-height:100%;" ></a>     
         </div>
@@ -331,34 +402,45 @@ $('#wallimage').change(function(){
         <div class="panel panel-default" style="padding:1%;" >
             <p >{{post.text}}</p>
         </div>
+        
+      </div>
+        <div class="col-lg-2" style="background-color:">
+        {% for tag in post.tags.all %}
               
+        <span class="badge" style="background-color:orange; margin:5px;">{{tag}}</span>
+
+        {% endfor %}
+        </div>
+
+
             {% else %}
 
-            
-        <div class="panel panel-default"  style="padding:15px;margin-left:60px;">
-               
+        <div class="col-lg-8" style="background-color:;margin-left:75px">    
+       <div class="panel panel-default" style="padding:10px;" >
+              
             {{post.text}}
-
+        </div>
         </div>
 
         {% endif %}
             
         
          
+        
+
+ 
          {% if post.get_comments_count == 1%}
 
 
          <a href="{% url 'conversation' country_slug=post.country.slug city_slug=post.city.slug post_id=post.id %}"><button type="button" class="btn btn-warning pull-right" style="margin:1%"><b >{{post.get_comments_count}}</b> Comment &raquo;</button></a>
-	{% else %}
+  {% else %}
 
          <a href="{% url 'conversation' country_slug=post.country.slug city_slug=post.city.slug post_id=post.id %}"><button type="button" class="btn btn-warning pull-right" style="margin:1%"><b >{{post.get_comments_count}}</b> Comments &raquo;</button></a>
-	{% endif %}
- <div class="pull-right" style="margin:5px"><span class="badge badge-success">Posted {{post.posted_on|timesince}} ago</span>
-       </div>
-        
+  {% endif %}
+ 
          
      
-
+      
       <div class="pull-left">
       <input title="Vote Up" type="image" src="/media/Images/up.png" class="upButton" data-id="{{post.id}}" style="margin-right:5px">{% csrf_token %}</input>
       </div>
@@ -372,22 +454,23 @@ $('#wallimage').change(function(){
        <input type="image" src="/media/Images/down.png" class="downButton" data-id="{{post.id}}" style="margin-left:5px; ">{% csrf_token %}</input>
       </div> -->
       
-     
-     </div>
-     
-     
-     
-
-      
-
     
+   </div>
+
   
 
   <hr>
   
+    
   {% endfor %}
 
 
+     
+     
+     
+
+
+    
 
   <div style="text-align:center; font-size:20px;">
 <div class="pagination" >  
@@ -395,14 +478,28 @@ $('#wallimage').change(function(){
 {% show_pages %}
 
 </div> <!--container-->
-
-  </div>
+</div>
 </div>
 
+
+<div class="col-lg-2">
+<!-- // Begin Current Moon Phase HTML (c) MoonConnection.com // --><div style="width:223px"><div style="padding:2px;background-color:#000000;border: 1px solid #000000"><div style="padding:16px;padding-bottom:6px;padding-top:6px;border: 1px solid #AFB2D8" align="center"><div style="padding-bottom:7px;color:#FFFFFF;font-family:arial,helvetica,sans-serif;font-size:11px;letter-spacing:.3em;">CURRENT MOON</div><script language="JavaScript" type="text/javascript">var ccm_cfg = { pth:"http://www.moonmodule.com/cs/", fn:"ccm_h1.swf", lg:"en", hs:1, tf:"12hr", scs:1, df:"std", dfd:0, tc:"FFFFFF", bgc:"000000", mc:"000000", fw:184, fh:79, js:0, msp:0, u:"mc" }</script><script language="JavaScript" type="text/javascript" src="http://www.moonmodule.com/cs/ccm_fl.js"></script><div style="padding-top:5px" align="center"><a href="http://www.moonconnection.com/moon_phases.phtml" target="mc_moon_ph" style="font-size:10px;font-family:arial,verdana,sans-serif;color:#7F7F7F;text-decoration:underline;background:#000000;border:none;"><span style="color:#7F7F7F">lunar phases</span></a></div></div></div></div><!-- // end moon phase HTML // -->
+
+      </div>
+    
+    
+    
+
+
+ 
+
+
+
 </div>
+
   
 
-
+</div>
 
 
 
