@@ -20,3 +20,4 @@ DATABASES = {
 }
 
 
+ALLOWED_HOSTS = ['www.gccfishing.com', 'gccfishing.com']
