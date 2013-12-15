@@ -75,8 +75,7 @@ class UserCreationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         
-        pass
-
+        super(UserCreationForm, self).__init__(*args, **kwargs)
 
         def validate_uniqueness_of_username_field(value):
             # Since User.username is unique, this check is redundant,
