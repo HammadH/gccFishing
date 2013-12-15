@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import datetime
+from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
@@ -11,52 +11,65 @@ class Migration(SchemaMigration):
         # Adding model 'Wallpost'
         db.create_table(u'wall_wallpost', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('author', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['authtools.User'])),
+            ('author', self.gf('django.db.models.fields.related.ForeignKey')(related_name='posts', to=orm['authtools.User'])),
             ('posted_on', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('points', self.gf('django.db.models.fields.IntegerField')(default=0)),
-        ))
-        db.send_create_signal(u'wall', ['Wallpost'])
-
-        # Adding model 'Imagepost'
-        db.create_table(u'wall_imagepost', (
-            (u'wallpost_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['wall.Wallpost'], unique=True, primary_key=True)),
-            ('image', self.gf('sorl.thumbnail.fields.ImageField')(max_length=100)),
+            ('city', self.gf('django.db.models.fields.related.ForeignKey')(related_name='posts', null=True, to=orm['Locations.City'])),
+            ('country', self.gf('django.db.models.fields.related.ForeignKey')(related_name='posts', null=True, to=orm['Locations.Country'])),
+            ('image', self.gf('sorl.thumbnail.fields.ImageField')(max_length=100, blank=True)),
             ('text', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
         ))
-        db.send_create_signal(u'wall', ['Imagepost'])
-
-        # Adding model 'Textpost'
-        db.create_table(u'wall_textpost', (
-            (u'wallpost_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['wall.Wallpost'], unique=True, primary_key=True)),
-            ('text', self.gf('django.db.models.fields.TextField')()),
-        ))
-        db.send_create_signal(u'wall', ['Textpost'])
+        db.send_create_signal(u'wall', ['Wallpost'])
 
         # Adding model 'Comment'
         db.create_table(u'wall_comment', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('author', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['authtools.User'])),
+            ('author', self.gf('django.db.models.fields.related.ForeignKey')(related_name='comments', null=True, to=orm['authtools.User'])),
             ('posted_on', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('wallpost', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['wall.Wallpost'])),
+            ('text', self.gf('django.db.models.fields.TextField')()),
+            ('post', self.gf('django.db.models.fields.related.ForeignKey')(related_name='comments', to=orm['wall.Wallpost'])),
+            ('points', self.gf('django.db.models.fields.IntegerField')(default=0)),
         ))
         db.send_create_signal(u'wall', ['Comment'])
+
+        # Adding model 'pic'
+        db.create_table(u'wall_pic', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('i', self.gf('sorl.thumbnail.fields.ImageField')(max_length=100)),
+        ))
+        db.send_create_signal(u'wall', ['pic'])
 
 
     def backwards(self, orm):
         # Deleting model 'Wallpost'
         db.delete_table(u'wall_wallpost')
 
-        # Deleting model 'Imagepost'
-        db.delete_table(u'wall_imagepost')
-
-        # Deleting model 'Textpost'
-        db.delete_table(u'wall_textpost')
-
         # Deleting model 'Comment'
         db.delete_table(u'wall_comment')
 
+        # Deleting model 'pic'
+        db.delete_table(u'wall_pic')
+
 
     models = {
+        u'Locations.city': {
+            'Meta': {'object_name': 'City'},
+            'country': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'cities'", 'to': u"orm['Locations.Country']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'image': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100'}),
+            'lng': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
+            'ltd': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'slug': ('autoslug.fields.AutoSlugField', [], {'unique': 'True', 'max_length': '50', 'populate_from': "'name'", 'unique_with': '()'})
+        },
+        u'Locations.country': {
+            'Meta': {'object_name': 'Country'},
+            'flag': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'image': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
+            'slug': ('autoslug.fields.AutoSlugField', [], {'unique_with': '()', 'max_length': '50', 'populate_from': "'name'"})
+        },
         u'auth.group': {
             'Meta': {'object_name': 'Group'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -73,8 +86,11 @@ class Migration(SchemaMigration):
         u'authtools.user': {
             'Meta': {'ordering': "[u'name', u'email']", 'object_name': 'User'},
             'activation_key': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
+            'city': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'members'", 'null': 'True', 'to': u"orm['Locations.City']"}),
+            'country': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'members'", 'null': 'True', 'to': u"orm['Locations.Country']"}),
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'unique': 'True', 'max_length': '255', 'db_index': 'True'}),
+            'email_notification': ('django.db.models.fields.SmallIntegerField', [], {'default': '1'}),
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'image': ('sorl.thumbnail.fields.ImageField', [], {'default': "'Images/default_profile_image.png'", 'max_length': '100'}),
@@ -94,30 +110,43 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
+        u'taggit.tag': {
+            'Meta': {'object_name': 'Tag'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'})
+        },
+        u'taggit.taggeditem': {
+            'Meta': {'object_name': 'TaggedItem'},
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'taggit_taggeditem_tagged_items'", 'to': u"orm['contenttypes.ContentType']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'object_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
+            'tag': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'taggit_taggeditem_items'", 'to': u"orm['taggit.Tag']"})
+        },
         u'wall.comment': {
             'Meta': {'object_name': 'Comment'},
-            'author': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['authtools.User']"}),
+            'author': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'comments'", 'null': 'True', 'to': u"orm['authtools.User']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'points': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'post': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'comments'", 'to': u"orm['wall.Wallpost']"}),
             'posted_on': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'wallpost': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['wall.Wallpost']"})
+            'text': ('django.db.models.fields.TextField', [], {})
         },
-        u'wall.imagepost': {
-            'Meta': {'object_name': 'Imagepost', '_ormbases': [u'wall.Wallpost']},
-            'image': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100'}),
-            'text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            u'wallpost_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['wall.Wallpost']", 'unique': 'True', 'primary_key': 'True'})
-        },
-        u'wall.textpost': {
-            'Meta': {'object_name': 'Textpost', '_ormbases': [u'wall.Wallpost']},
-            'text': ('django.db.models.fields.TextField', [], {}),
-            u'wallpost_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['wall.Wallpost']", 'unique': 'True', 'primary_key': 'True'})
+        u'wall.pic': {
+            'Meta': {'object_name': 'pic'},
+            'i': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
         u'wall.wallpost': {
             'Meta': {'object_name': 'Wallpost'},
-            'author': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['authtools.User']"}),
+            'author': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'posts'", 'to': u"orm['authtools.User']"}),
+            'city': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'posts'", 'null': 'True', 'to': u"orm['Locations.City']"}),
+            'country': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'posts'", 'null': 'True', 'to': u"orm['Locations.Country']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'image': ('sorl.thumbnail.fields.ImageField', [], {'max_length': '100', 'blank': 'True'}),
             'points': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'posted_on': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
+            'posted_on': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'})
         }
     }
 

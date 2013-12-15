@@ -1,0 +1,21 @@
+
+{% load thumbnail %}
+
+
+<div class="row" style="background-color:white;margin:5px;border:;border-color:;padding:8px;"> 
+        
+        <ul class="nav pull-left" style="text-align:center; margin:5px">
+           <a href="{% url 'profile' author.id %}" style="text-decoration:none">
+            {% thumbnail comment.author.image "35x35" crop="center" as im %}
+              <img src = "{{im.url}}" width="{{im.width}}" height="{{im.height}}" >
+            {% endthumbnail %} 
+            <li style="text-align:center; font-size:10px">{{author.name}}</li></a>
+            <li style="font-size:10px; margin-top:-2px;">{{author.reputation}}</li>
+          </ul>
+         
+          <div class="col-lg-9" style=" padding:;">
+            <p style="font-size:12px;">{{comment.text}}</p>
+       </div>
+        
+         <span class="pull-right" style="font-size:10px; color:grey;">{{comment.posted_on}}</span>
+       </div>

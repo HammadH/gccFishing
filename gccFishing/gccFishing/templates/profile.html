@@ -206,7 +206,7 @@ $.ajaxSetup({
           {% if user.id == member.id %}
         
     <div class="col-lg-2" style="background-color:; margin:20px; text-align:center;">
-    <h4 title="Member name"> <b>{{ member.name }}</b></h4></a>
+    <h4 title="Member name"> <b>{{ member.name }}</b></h4>
       
 
 
@@ -232,7 +232,7 @@ $.ajaxSetup({
       </div>
         
       <div class="col-lg-2" style="background-color:;margin:20px;">
-        <h5>Last seen:</h5>
+        <h5>Last seen: <b>{{last_seen|timesince}}</b> ago</h5>
         <h5>Posts created: <b>{{member.posts.count}}</b></h5>
         <h5>Profile Views: <b>{% get_hit_count for member %}</b></h5>
 
@@ -244,7 +244,9 @@ $.ajaxSetup({
       </div>
         <div class = "pull-right">
         <a style="text-decoration:none" href="{% url 'edit_profile' member.id %}"><button class="btn btn-info btn-sm"> Edit Profile &nbsp<i class="glyphicon glyphicon-cog" style="size:75%"></i></button></a><br>
-       <a href="{% url 'insideCity_wall' user.country.slug user.city.slug %}" class="btn btn-warning">Back to Wall &raquo;</a>
+       <a style="text-decoration:none" href="{% url 'subscription' member.id %}"><button class="btn btn-success btn-sm"> Email <i class="glyphicon glyphicon-cog" style="size:75%"></i></button></a><br>
+       <a href="{% url 'insideCity_wall' user.country.slug user.city.slug %}" class="btn btn-warning">Back to Wall &raquo;</a><br>
+       
      </div>
           
 
@@ -255,27 +257,27 @@ $.ajaxSetup({
 
       
        <div class="col-lg-2" style="background-color:; margin:20px; text-align:center;">
-       <h4> {{ member.name }}</h4></a>
+       <h4><b> {{ member.name }}</b></h4></a>
        {% thumbnail  member.image "150x150" crop="center" as im %}
        <img src="{{im.url}}" width="{{ im.width }}" height="{{ im.height }}">
        {% endthumbnail %}  
-       <h5 >{{member.reputation}}</h5>
+       <h5 ><b>{{member.reputation}}</b></h5>
       </div>
       <div class="col-lg-4" style="background-color:; margin:20px;">
       
       
       <h5><b>{{member.city}}</b>, {{member.country}} </h5>
-      <h5>{{member.email}}</h5>
-      <h5>Member since: {{member.date_joined|timesince}}</h5>
+      <h5><i>{{member.email}}</i></h5>
+      <h5>Member since: <b>{{member.date_joined|timesince}}</b></h5>
 
 
 
       </div>
         
       <div class="col-lg-2" style="background-color:;margin:20px;">
-        <h5>Last seen:</h5>
+        <h5>Last seen: <b>{{last_seen|timesince}}</b> ago</h5>
         <h5>Posts created: <b>{{member.posts.count}}</b> </h5>
-        <h5>Profile Views:<b> {% get_hit_count for member %}</b></h5>
+        <h5>Profile Views: <b>{% get_hit_count for member %}</b></h5>
         
       </div>
 

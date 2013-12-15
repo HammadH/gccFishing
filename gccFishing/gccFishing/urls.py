@@ -7,8 +7,9 @@ from django.contrib import admin
 admin.autodiscover()
 
 from authtools.urls import *
-from views import mainView, registration, loginView, logoutView, activate, profile,   \
-notifications_view, process_notification_and_redirect_view, indexView, test_jfu, loc, country_select, EditProfile
+from views import registration, loginView, logoutView, activate, profile,   \
+notifications_view, process_notification_and_redirect_view, indexView, country_select, EditProfile, \
+subscription
 from django.views.generic import TemplateView
 from Locations import urls
 from django.contrib.auth import get_user_model
@@ -20,28 +21,19 @@ from Locations.views import countryView, process_up_vote, process_down_vote,ajax
 from hitcount.views import update_hit_count_ajax
 
 import notifications
-import uploadify
+
 
 User = get_user_model()
 
 urlpatterns = patterns('',
-    # Examples:
+ 
     
     url(r'^$', indexView.as_view(), name='index'),
 
-    url(r'^(?P<user_id>\d+)/home/$', mainView.as_view(), name='home'),
-    
-    
     url(r'^register', registration.as_view(), name='registration'),
     url(r'^thanks', TemplateView.as_view(template_name='thanks.html')),
 
-   
-    # url(r'^gccFishing/', include('gccFishing.foo.urls')),
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^gokaramba/', include(admin.site.urls)),
     url(r'^accounts/', include('authtools.urls')),
 
     url(r'^login/', loginView, name = 'login'),
@@ -58,7 +50,7 @@ urlpatterns = patterns('',
        
 	url(r'^processing_notification/(?P<notification_id>\d+)/', process_notification_and_redirect_view, name = 'process_notification'),
    
-    url(r'^jfu/', test_jfu, name='jfu_upload'),
+    
  
     
     url(r'^locations/', include('Locations.urls'), name= 'locations'),
@@ -74,8 +66,7 @@ urlpatterns = patterns('',
 
     url(r'^(?P<user_id>\d+)/notifications/', notifications_view, name='notifications'),
     url(r'^chaining/', include('smart_selects.urls')),
-    url(r'^user/', CreateView.as_view(model=User)),
-    url(r'^loc/', loc.as_view()),
+
 
     url(r'^country_select', country_select, name='country_select'),
 
@@ -85,8 +76,8 @@ urlpatterns = patterns('',
 
     url(r'^ajax/hit/$', update_hit_count_ajax, name='hitcount_update_ajax'),
 
-
-
+    url(r'^subscription/(?P<id>\d+)', subscription, name='subscription'),
+    url(r'^youtube/', include('django_youtube.urls')),
 ) 
 
 

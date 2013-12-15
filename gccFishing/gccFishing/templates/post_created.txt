@@ -1,0 +1,1 @@
+{{author.name}}'s Fishing in {{city}}!

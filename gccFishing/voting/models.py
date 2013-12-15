@@ -55,9 +55,9 @@ def update_user_reputation(sender, instance, created,  **kwargs):
     post = Wallpost.objects.get(id=instance.object_id)
     user = post.author
     if instance.vote == 1:
-        user.reputation += 10
+        user.reputation += 5
     elif instance.vote == -1:
-        user.reputation -= 10
+        user.reputation -= 2
     user.save()
     return
 

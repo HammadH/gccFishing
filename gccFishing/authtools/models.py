@@ -35,8 +35,13 @@ except ImportError:
     datetime_now = datetime.datetime.now
 
 
+STATUS = (
+    (1, 'ON'),
+    (0, 'OFF'),
+    )
+
 def image_path(instance, filename):
-    path = "Images/%s"	%filename
+    path = "Images/Profile_images/{user}/{file}".format(user=instance.name, file=filename)
     return path 
 
 class UserManager(BaseUserManager):
@@ -156,6 +161,8 @@ class AbstractNamedUser(AbstractEmailUser):
     
     country = models.ForeignKey('Locations.Country', related_name = "members", null = True)
     city = models.ForeignKey('Locations.City', related_name = "members", null = True)
+
+    email_notification = models.SmallIntegerField(choices=STATUS, default=1)
 
     
     

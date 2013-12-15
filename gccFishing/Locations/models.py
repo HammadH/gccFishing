@@ -1,3 +1,5 @@
+
+
 from django.db import models
 from sorl.thumbnail import ImageField
 from django.core.urlresolvers import reverse
@@ -9,7 +11,7 @@ from smart_selects.db_fields import ChainedForeignKey
 
 
 def image_path(instance, filename):
-	path = "Images/Locations/%s"  %filename
+	path = "Images/Locations/{place}/{file}".format(place = instance.name, file=filename)
 	return path
 
 
@@ -40,12 +42,36 @@ class City(models.Model):
 	name = models.CharField("Name of City", max_length=100)
 	image = ImageField(upload_to=image_path)
 	slug = AutoSlugField(populate_from='name', unique = True)
-	lng = models.CharField("Longitude", max_length=100, blank= True)
-	ltd = models.CharField("Latitude", max_length=100, blank=True)
+	__lng = models.CharField("Longitude", max_length=100, db_column = 'lng', blank= True)
+	__ltd = models.CharField("Latitude", max_length=100, db_column='ltd', blank=True)
 	country = models.ForeignKey(Country, related_name = 'cities')
 
 	def __unicode__(self):
 			return self.name
+
+	@property
+	def lng(self):
+		return self.__lng 
+
+	@lng.setter
+	def lng(self, value):
+		if value == '':
+			self.__lng = '0.0'
+		else:
+			self.__lng = value
+
+	@property
+	def ltd(self):
+		return self.__ltd 
+
+	@ltd.setter
+	def ltd(self, value):
+		if value == '':
+			self.__ltd = '0.0'
+		else:
+			self.__ltd = value
+
+
 
 	def get_absolute_url(self):
 		return reverse('insideCity_wall', kwargs= {'country_slug': self.country.slug, 'city_slug' : self.slug}) 

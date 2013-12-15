@@ -1,0 +1,60 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+   
+
+    <title>Club Subscription</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static "bootstrap.css" %}" rel="stylesheet">
+ 
+
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+
+
+
+  </head>
+
+  <body >
+
+    
+     
+	<div class="col-lg-3" style="text-align:center">
+	You will not receive any notifications from now on..
+	<form class="form-signin" method="post">{% csrf_token %}
+       
+	
+	
+		
+		
+	<input type="text" name = "email" class="form-control" placeholder="Email" style="margin:10px" autofocus >        
+	
+        <input type="password" name = "password1" class="form-control" placeholder="Password" style="margin:10px">
+	      
+
+         
+
+        <input button class="btn btn-lg btn-primary btn-block" id = "register_button" type="submit" value = "Submit" style="margin:10px">
+      </form>
+     
+    </div> <!-- /container -->
+
+	
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+    
+    	  
+</body>
+</html>

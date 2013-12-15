@@ -3,16 +3,16 @@ Pillow==2.2.1
 South==0.8.3
 argparse==1.2.1
 django-autoslug==1.7.1
-django-crispy-forms==1.4.0
 django-debug-toolbar==0.9.4
 django-endless-pagination==2.0
 django-geoposition==0.1.4
 -e git://github.com/thornomad/django-hitcount.git@178680e43766982f5ebf05b6b5620e9fea70b37c#egg=django_hitcount-master
-django-jfu==1.0.7
 django-model-utils==1.5.0
 django-notifications-hq==0.6.0
 django-smart-selects==1.0.9
 django-taggit==0.10
+django-youtube==0.2
+gdata==2.0.18
 pgmagick==0.5.7
 psycopg2==2.5.1
 python-memcached==1.53

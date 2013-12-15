@@ -7,9 +7,7 @@ from django.contrib.auth.hashers import identify_hasher
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.utils.html import format_html
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Fieldset,HTML, Div
-from crispy_forms.bootstrap import FormActions, Field 
+
 
 User = get_user_model()
 
@@ -77,31 +75,8 @@ class UserCreationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         
-        self.helper = FormHelper()
-        self.helper.form_id = 'id_registrationForm'
-        self.helper.form_class = "blueForms"
-        self.helper.form_method = 'post'
-        self.helper.form_action = 'registration'     # {url thanks }
-        
-        self.helper.layout = Layout(
-            Fieldset( 
-                'legend',
-               
-                'image',
+        pass
 
-                Field('name', css_class = 'form-control', ),
-                'email',
-                'password1',
-                'password2',
-                'country',
-                'city',
-                ),
-            FormActions(
-                Submit('submit', 'Submit'))
-            )
-
-        
-        super(UserCreationForm, self).__init__(*args, **kwargs)
 
         def validate_uniqueness_of_username_field(value):
             # Since User.username is unique, this check is redundant,

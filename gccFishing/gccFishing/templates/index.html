@@ -11,15 +11,16 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="/media/fishing_logo.png">
-    
+    <a href="https://plus.google.com/109746868678466315395" rel="publisher">Google+</a>
     <title>Gulf Fishing Club</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="{% static "styles-blue.css" %}" rel="stylesheet">
+    
 <link href="{% static "bootstrap.css" %}" rel="stylesheet">
     <!-- Custom styles for this template -->
-    <link href="{% static "bootstrap.min.css" %}" rel="stylesheet">
+ 
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Rancho&effect=shadow-multiple">
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="../../assets/js/html5shiv.js"></script>
@@ -33,6 +34,10 @@
   <body>
 
    {% block bar %}
+    
+
+    
+   
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -41,7 +46,27 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-        <a class="navbar-brand" href={% url 'index' %}>Gulf Fishing</a>
+       
+          <ul style="list-style-type:none">
+           <li class="dropdown">
+              <a href="#" class="navbar-brand" data-toggle="dropdown">Gulf Fishing <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/">Home</a></li>
+                     <li class="divider"></li>
+                <li><a href="/locations/bahrain/">Bahrain</a></li>
+                <li><a href="/locations/qatar/">Qatar</a></li>
+                <li><a href="/locations/saudi-arabia/">Saudi Arabia</a></li>
+                <li><a href="/locations/oman/">Oman</a></li>
+                <li><a href="/locations/kuwait/">Kuwait</a></li>
+           
+             <!--   <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li> -->
+              </ul>
+            </li> 
+          </ul>
+
+
         </div> 
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -52,18 +77,7 @@
             
   
 
-  <!--          <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>   -->
+         
           </ul>
      
 {% block user %}
@@ -74,10 +88,10 @@
         <ul class = "nav pull-right">
            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{% url 'profile' user.id %}"><img src="/media/Images/profile.png" style="width:18px;height:20px;margin-right:5px;">Profile</a></li>
-                            <li><a href="/contact"><img src="/media/Images/bulb.png" style="width:15px;height:20px;margin-right:5px;"> Suggest idea</a></li>
+                            <li><a href="{% url 'profile' user.id %}">Profile</a></li>
+                            <li><a href="{% url 'notifications' user_id=user.id %}">Notifications</a></li>
                             <li class="divider"></li>
-                            <li><a href="{% url 'logout' %}"><img src="/media/Images/power.png" style="width:18px;height:20px;margin-right:5px;"> Logout</a></li>
+                            <li><a href="{% url 'logout' %}"> Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -90,21 +104,35 @@
     
      
 
-      <ul class="nav pull-right" style="padding:1%; ">
-   <a href="{% url 'profile' user.id %}" style="text-decoration:none"><h5 style="color: #0099FF"> {{ user.name }}</h5></a>
-    <h6 title="Reputation" style="color: #CC0000; text-align:center;"><b>{{user.reputation}}</b></h6>
-        </ul>
+      <div class="pull-right" style="background-color:;height:45px;padding:3px;">
+   <a href="{% url 'profile' user.id %}" style="text-decoration:none"><p style="color: #0099FF; font-size:12px;"> {{ user.name }}</p></a>
+    <p title="Reputation" style="color: #CC0000; text-align:center;font-size:10px;margin-top:-10px;"><b>{{user.reputation}}</b></p>
+        </div>
       
 
-      <ul class="nav pull-right" style="padding-top: 1%; padding-right:0.5%">
+      <div class="pull-right" style="margin:3px;">
         
-        {% thumbnail  user.image "50x50" crop="center" as im %}
+        {% thumbnail  user.image "40x40" crop="center" as im %}
        <img src="{{im.url}}" width="{{ im.width }}" height="{{ im.height }}">
     {% endthumbnail %}  
         
-      </ul>
+      </div>
     
+       {% notifications_unread as unread_count %}
+        
+
+
+        {% if unread_count %}
       
+      <a href="{% url 'notifications' user_id=user.id %}"><i class="badge pull-right" style="background-color:orange; margin:15px">{{unread_count}}</i></a>
+      
+  
+  
+  
+
+
+  {% endif %}
+  
        
 
 
@@ -112,7 +140,7 @@
     {% else %}
 
 
-     <form class="navbar-form navbar-right" action= "{% url 'login' %} ?next={{request.path }}" method="post">{%csrf_token%}
+     <form class="navbar-form navbar-right" action= "{% url 'login' %}" method="post">{%csrf_token%}
             <div class="form-group">
               <input type="text" placeholder="Email" class="form-control" name="email">
             </div>
@@ -232,7 +260,7 @@
 
 
 {% block footer %}
-<p style="text-align:center; color:red;"><i>Please note that this website is still under development. </i></P 
+
    <footer class="widewrapper footer" style="margin-top:200px">
         <div class="container" >
             <div class="row footer">
@@ -269,16 +297,16 @@
         </div>
     </footer>
 
+
+
+
 {% endblock %}
 
-
-   
-
+ <script src="{% static "bootstrap.min.js" %}"></script>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{% static "jquery.js" %}" ></script>
-    <script src="{% static "bootstrap.min.js" %}"></script>
+  
   </body>
 
 </html>

@@ -1,9 +1,9 @@
 import logging
-
+import json
 
 
 from django.views.generic.base import View 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, QueryDict
 from django.shortcuts import render_to_response
 from models import Country, City
 from django.template import RequestContext, Context 
@@ -15,15 +15,20 @@ from django.views.generic.edit import CreateView
 from django.utils import simplejson
 from django.forms.models import model_to_dict
 from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
 from django.template.defaultfilters import slugify
-
+from django.template.loader import render_to_string
+from django.middleware.csrf import get_token
+from onlineuser.models import Online
 from django.contrib.auth import get_user_model
+from django_youtube.views import upload
+
+
 
 User = get_user_model()
 
 
-
-
+CONTENT_TYPE = ['image'] #for checking content_type of uploaded images
 
 
 
@@ -67,6 +72,8 @@ class cityView(View):
 
 
 
+
+
 class citywall(View):
 	
 
@@ -74,6 +81,11 @@ class citywall(View):
 		template_name = 'citywall.html'
 		city_slug = kwargs['city_slug']
 		context = self.get_context_data(city_slug)
+		youtube_form_context=upload(request)
+		if 'form' in youtube_form_context:
+			context['form']=youtube_form_context['form']
+			context['post_url']=youtube_form_context['post_url']
+			context['next_url']=youtube_form_context['next_url']
 		return render_to_response(template_name, context, RequestContext(request))
 
 
@@ -81,26 +93,145 @@ class citywall(View):
 	def post(self, request, *args, **kwargs):       #not the best implementation!
 		
 		redirect_to = request.path
-	
-		post = request.POST.copy()
-		if post.has_key('email') and post.has_key('password'):
-			return HttpResponseRedirect(reverse('login', request))
-
 		
-
-		elif post.has_key('wallpost'):
+		server_response = {
+		'success': 0,
+		'error': 0,
+		'message': '',
+		'template': '',
+		} 
+		
+		template_context = {} # used for rendering post and comment templates
+		
+		if request.is_ajax():
 			if request.user.is_authenticated():
-				if post['wallpost'] =='':
-						return HttpResponseRedirect(redirect_to)
-				else:
-					post = self.create_wallpost(request)
-					if post:
-						return HttpResponseRedirect(redirect_to)
+				if request.POST.has_key('comment'):
+				
+					comment = request.POST.get('comment','')
+					print comment
+					if comment == '':
+						
+						server_response['error'] = 1
+						server_response['message'] = u'Nothing to post..'
+						
+						return HttpResponse(simplejson.dumps(server_response), content_type="application/json")
 					else:
-						return HttpResponse('post not created')		
-			else:
-				return HttpResponse('Please login to post')
+						
+						post = Wallpost.objects.get(id= request.POST['post_id'])
+						new_comment = Comment.objects.create_comment(request.POST['comment'], request.user , post)
+					
+						template_context['comment']= new_comment
+						template_context['author']= new_comment.author
+						comment_template = render_to_string("comment.html", template_context)
+						
+						server_response['success']=1
+						server_response['template']=comment_template
+						return HttpResponse(simplejson.dumps(server_response), content_type="application/json")
+				
+				elif request.POST.has_key('wallpost'):
+					
+					template_context = {}
+					text = request.POST.get('wallpost', '')
+					
+					image = self.check_image(request.FILES.get('wallimage', ''))
+					image_1 = self.check_image(request.FILES.get('wallimage_1', ''))
+					image_2 = self.check_image(request.FILES.get('wallimage_2', ''))
+					image_3 = self.check_image(request.FILES.get('wallimage_3', ''))
+					#video_id
 
+					if text == '' and image == '' and image_1 == '' and image_2 =='' and image_3 == '':
+						server_response['error'] = 1
+						server_response['message'] = u"Nothing to post!"
+						return HttpResponse(simplejson.dumps(server_response), content_type="application/json")
+
+					user = request.user
+					tags= request.POST.get('tags','')
+					
+					tags_parsed = self.parse_tags(tags)
+					city_slug = request.POST.get('city_slug')
+					city = City.objects.get(slug=city_slug)
+					country_slug = request.POST.get('country_slug')
+					country = Country.objects.get(slug=country_slug)
+					
+					try:
+						post = Wallpost.objects.create_post(user, country, city, image, image_1, image_2, image_3, text)   # post is object
+						for tag in tags_parsed:
+							post.tags.add(tag)
+					except:
+						server_response['error']=1
+						server_response['message']=u"Oh snap! something went wrong. Try again."
+						return HttpResponse(simplejson.dumps(server_response), content_type="application/json")
+		
+					if post is not None:
+						template_context['post'] = post
+						template_context['csrfmiddlewaretoken'] = get_token(request)
+						post_template= render_to_string('post.html', template_context)
+						
+						server_response['success']=1
+						server_response['template']=post_template
+						return HttpResponse(simplejson.dumps(server_response), content_type="application/json")
+					else:
+						server_response['error']=1
+						server_response['message']=u'Some error occured. Please try later.'
+						return HttpResponse(simplejson.dumps(server_response), content_type="application/json")
+						
+			else:
+				return HttpResponse("Please Login first.")
+		else:
+			if request.POST.has_key('comment'):
+				context = {}
+				post = Wallpost.objects.get(id= request.POST['post_id'])
+				new_comment = Comment.objects.create_comment(request.POST['comment'], request.user , post)
+				context['comment']= new_comment
+				context['author']= new_comment.author
+				comment_template = render_to_string("comment.html", context)
+				return HttpResponseRedirect(redirect_to, RequestContext(request))
+
+			elif request.POST.has_key('wallpost'):
+				context = {}
+				text = request.POST.get('wallpost', '')
+				image = self.check_image(request.FILES.get('wallimage', ''))
+				image_1 = self.check_image(request.FILES.get('wallimage_1', ''))
+				image_2 = self.check_image(request.FILES.get('wallimage_2', ''))
+				image_3 = self.check_image(request.FILES.get('wallimage_3', ''))
+				if text == '' and image == '' and image_1 == '' and image_2 =='' and image_3 == '':
+					return HttpResponse("nothing to post!")
+
+				user = request.user
+				tags= request.POST.get('tags','')
+				tags_parsed = self.parse_tags(tags)
+				city_slug = request.POST.get('city_slug')
+				city = City.objects.get(slug=city_slug)
+				country_slug = request.POST.get('country_slug')
+				country = Country.objects.get(slug=country_slug)
+				try:
+					post = Wallpost.objects.create_post(user, country, city, image, image_1, image_2, image_3, text)   # post is object
+					for tag in tags_parsed:
+						post.tags.add(tag)
+				except:
+					return HttpResponse('some error in posting')
+		
+				if post is not None:
+					context['post'] = post
+					context['csrfmiddlewaretoken'] = get_token(request)
+					post_template= render_to_string('post.html', context)
+					return HttpResponseRedirect(redirect_to, RequestContext(request))
+				else:
+					return HttpResponse("Some error occured, please try later.")
+
+			
+
+	def check_image(self, image):
+		if image is not '':
+			ct = image.content_type.split('/')[0]
+			if ct not in CONTENT_TYPE:
+				return HttpResponse('The uploaded file is not an image!')
+			else:
+				return image
+		else:
+			return ''
+
+				
 			
 
 	def get_context_data(self, city_slug):
@@ -117,10 +248,13 @@ class citywall(View):
 		
 			context['city_map_ltd'] =city_map_ltd  # required for google map
 			context['city_map_lng'] =city_map_lng
+			print city_map_lng
+			print city_map_ltd
 
-		context['posts'] = city.posts.order_by('-posted_on')[:25] 
+		context['posts'] = city.posts.order_by('-posted_on').select_related() 
 		context['members_count'] = city.members.count()
-		context['members'] = city.members.order_by('-reputation')
+		context['members'] = city.members.order_by('-reputation').select_related()
+		context['online_members']= Online.objects.online_users(city_slug)
 		#context['spots']
 		return context
 
@@ -131,27 +265,6 @@ class citywall(View):
 		temp = float(r.match(string).group(1))
 		return temp
 
-
-
-
-	def create_wallpost(self, request):
-		text = request.POST.get('wallpost')
-		image = request.FILES.get('wallimage', '')
-		user = request.user
-		tags= request.POST.get('tags','')
-		tags_parsed = self.parse_tags(tags)
-		city_slug = request.POST.get('city_slug')
-		city = City.objects.get(slug=city_slug)
-		country_slug = request.POST.get('country_slug')
-		country = Country.objects.get(slug=country_slug)
-		try:
-			post = Wallpost.objects.create_post(user, country, city, image, text)   # post is object
-			for tag in tags_parsed:
-				post.tags.add(tag)
-		except:
-			return HttpResponse('some error in posting')
-		return post
-
 	def parse_tags(self, tags):
 		parsed_tags = tags.split()
 		return parsed_tags
@@ -159,26 +272,40 @@ class citywall(View):
 
 
 def conversation_view(request, country_slug, city_slug, post_id):
-	if request.user.is_authenticated():
-		if request.method == "POST":
-			
-			text = request.POST['comment']
-			posted_by = request.user
-			post_id = request.POST['post_id']
-			post = Wallpost.objects.get(id=post_id)
-			next= request.GET.get('next')
-			try:
-				comment = Comment.objects.create_comment(text, posted_by, post)
-				return HttpResponseRedirect(next)
-			except:
-				return HttpResponse('some error in posting')
-		
-		else:
+	if request.method == 'POST':
+		if request.is_ajax():
+			if request.user.is_authenticated():
+				if request.POST.has_key('comment'):
+				
+					comment = request.POST.get('comment','')
+					print comment
+					if comment == '':
+						context = {}
+						context['message'] = u'Nothing to post..'
+						
+						return HttpResponse(simplejson.dumps(context), content_type="application/json")
+					else:
+						context = {}
+						post = Wallpost.objects.get(id= request.POST['post_id'])
+						new_comment = Comment.objects.create_comment(request.POST['comment'], request.user , post)
+					
+						context['comment']= new_comment
+						context['author']= new_comment.author
+						comment_template = render_to_string("comment.html", context)
+						return HttpResponse(simplejson.dumps(comment_template), content_type="application/json")
+	
+			else:	
+				return render_to_response('page_not_found.html')		
+	else:
+		try:
 			post = Wallpost.objects.get(id=post_id)
 			return render_to_response('conversation.html', {'post':post, 'user': request.user}, RequestContext(request))
+		except:
+			return render_to_response('page_not_found.html')
+				
 
-	else:
-		return render_to_response('page_not_found.html')	
+
+
 
 
 def ajax_Upvote(request):
@@ -186,6 +313,13 @@ def ajax_Upvote(request):
 		post_id = request.POST.get('post_id')
 		post = Wallpost.objects.get(id=post_id)
 		voter = request.user
+		if post.author == voter:
+			response_dict={
+			'error': True,
+			'message': u"Come on now, you cant vote your own post." 
+			}
+
+			return HttpResponse(simplejson.dumps(response_dict), content_type="application/json")
 		vote_obj = Vote.objects.record_vote(post, voter, +1)
 		post.save_points()
 		points = post.get_points()
@@ -245,6 +379,9 @@ def process_up_vote(request, post_id):
 			post_id = request.POST.get('post_id')
 			voter = request.user
 			post = Wallpost.objects.get(id=post_id)
+			
+			if post.author == voter:
+				return HttpResponse(simplejson.dumps("Come on now, you cant vote your own post."), content_type="application/json")
 			vote_obj = Vote.objects.record_vote(post, voter, +1)
 			post.save_points()
 			points = post.get_points
@@ -408,14 +545,27 @@ class addCity(View):
 			
 		name = request.POST['name']
 		country = Country.objects.get(name=request.POST['country'])
-		image = request.FILES.get('city_image', 'Images/Locations/default_city.jpg')
-		lng = request.POST.get('lng', '')
-		ltd = request.POST.get('ltd', '')		 
+		image_temp = request.FILES.get('city_image', 'Images/Locations/default_city.jpg')
+		if image_temp != 'Images/Locations/default_city.jpg':
+			image = self.check_image(image_temp)
+		else:
+			image = image_temp
+		lng = request.POST.get('lng')
+		ltd = request.POST.get('ltd' )
+			 
 		city = City.objects.create(name=name, country=country, image=image, lng=lng, ltd=ltd)
 		if city is not None:
-			return render_to_response("city_created.html")
+			return HttpResponseRedirect(reverse('insideCity_wall',  kwargs={'country_slug':country.slug, 'city_slug':city.slug}))
 		else:
-			return HttpResponse("some error occured! we apologize.. please report to us and we will fix it")
+			return HttpResponse("some error occured! ")
+
+	def check_image(self, image):
+			ct = image.content_type.split('/')[0]
+			if ct not in CONTENT_TYPE:
+				return 'Images/Locations/default_city.jpg'
+			else:
+				return image
+		
 
 
 

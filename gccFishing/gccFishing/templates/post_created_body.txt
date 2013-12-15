@@ -1,0 +1,6 @@
+{{author.name}}'s post on Fishing in {{post.city.name}}.
+
+ {{post.text}}
+
+
+ View post on GFC website: www.gccfishing.com

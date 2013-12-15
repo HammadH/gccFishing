@@ -27,11 +27,14 @@ from django.template import RequestContext
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
+from django.utils import simplejson
+
 
 
 from Locations.models import Country, City, Location
-from wall.models import Wallpost, Comment, pic
+from wall.models import Wallpost, Comment
 from notifications.models import Notification 
+from onlineuser.models import Online
 
 from django.contrib.auth import authenticate, login, logout
 User = get_user_model()
@@ -42,7 +45,7 @@ resolve_url_lazy = lazy(resolve_url, str)
 from django.forms import EmailField
 from django.core.exceptions import ValidationError
 
-from jfu.http import upload_receive, UploadResponse
+CONTENT_TYPE = ['image']
 
 
 
@@ -64,22 +67,6 @@ class indexView(View):
 		context['countries'] = Country.objects.all()		
 		return context
 
-
-class mainView(View):
-	
-	def get(self, request, *args, **kwargs):
-		template_name = 'base.html'
-		user_id = kwargs['user_id']
-		context = self.get_context_data(user_id)
-		return render_to_response(template_name, context, RequestContext(request))
-
-
-	def get_context_data(self, user_id):
-		context = {}
-		
-		context['user'] = User.objects.get(id=user_id)		
-		return context
-	
 	
 
 @sensitive_post_parameters()
@@ -89,7 +76,7 @@ def loginView(request):
 	if request.method == 'POST':
 		email = request.POST.get('email', "")
 		password = request.POST.get('password', "")
-		redirect_to = request.REQUEST.get('next', '')	
+	#	redirect_to = request.REQUEST.get('next', '')	
 		try:		
 						
 			user = authenticate(email = email, password = password)
@@ -101,9 +88,9 @@ def loginView(request):
 				login(request, user)
 				
 			else: return HttpResponse('sorry, disabled account, please activate')
-		else: return HttpResponse('invalid login')
+		else: return HttpResponse('Incorrect Email and Password ')
 		
-		return HttpResponseRedirect(redirect_to)
+		return HttpResponseRedirect(reverse('insideCity_wall', kwargs={'country_slug':user.country.slug, 'city_slug':user.city.slug}))
 
 		
 
@@ -162,7 +149,11 @@ class registration(View):
 					clean_data['name'] = post['name']
 					clean_data['email'] = post['email']
 					clean_data['password1'] = post['password1']
-					clean_data['image'] = request.FILES.get('image',settings.DEFAULT_IMAGE_PATH)
+					image = request.FILES.get('image',settings.DEFAULT_IMAGE_PATH)
+					if image == settings.DEFAULT_IMAGE_PATH:
+						clean_data['image'] = image
+					else:
+						clean_data['image'] = self.check_image(image)
 					clean_data['country'] = Country.objects.get(name=post['country'])
 					clean_data['city'] = City.objects.get(name=post['city'])
 
@@ -190,6 +181,12 @@ class registration(View):
 		except ValidationError:
 			return False
 	
+	def check_image(self, image):
+			ct = image.content_type.split('/')[0]
+			if ct not in CONTENT_TYPE:
+				 return settings.DEFAULT_IMAGE_PATH
+			else:
+				return image
 			
 
 
@@ -222,12 +219,20 @@ def activate(request, activation_key):
 def profile(request, id):
 	member = User.objects.get(id=id)
 	member_catches = member.posts.exclude(image='')[:40]
-	row_1 = member_catches[0:10]
-	row_2 = member_catches[11:20]
-	row_3 = member_catches[21:30]
-	row_4 = member_catches[31:40]
+	ctx = {}
+	ctx['member']=member
+	try:
+		
+		ctx['last_seen']=Online.objects.last_seen(member) 
+	except Online.DoesNotExist:
+		ctx['last_seen']=u''
 
-	return render_to_response('profile.html',{'member':member, 'row_1':row_1, 'row_2':row_2,'row_3':row_3, 'row_4':row_4}, RequestContext(request))
+	ctx['row_1'] = member_catches[0:10]
+	ctx['row_2'] = member_catches[11:20]
+	ctx['row_3'] = member_catches[21:30]
+	ctx['row_4'] = member_catches[31:40]
+
+	return render_to_response('profile.html',ctx, RequestContext(request))
 
 class EditProfile(View):
 	def get(self, request, *args, **kwargs):
@@ -279,26 +284,7 @@ def notifications_view(request, user_id):
 
 
 
-def test_jfu(request):
 
-	file = upload_receive(request)
-	instance = pic.objects.create(i = file)
-	basename = os.path.basename( instance.i.name )
-	file_dict = {
-        'name' : basename,
-        'size' : instance.i.size,
-
-        'url': settings.MEDIA_URL + basename,
-        'thumbnail_url': settings.MEDIA_URL + basename,
-
-        
-        'delete_type': 'POST',
-    }
-
-	return UploadResponse( request, file_dict )
-
-class loc(CreateView):
-	model=Location
 
 def country_select(request):
 	country = request.POST['country']
@@ -312,4 +298,52 @@ def country_select(request):
 
 
 
+
+def subscription(request, id):
+	user = User.objects.get(id=id)
 	
+	if request.method == 'POST' and request.is_ajax():
+		ctx = {}
+
+		if user.email_notification == 1:
+			user.email_notification = 0
+			user.save()
+			if user.email_notification == 0:
+				ctx['message'] = u'Ok no more emails..'
+				ctx['status'] = u'OFF'
+				return HttpResponse(simplejson.dumps(ctx), content_type="application/json")
+			else:
+				return HttpResponse("Some error occured, please try again.")
+
+		elif user.email_notification == 0:	
+			user.email_notification = 1
+			user.save()
+			if user.email_notification == 1:
+				ctx['message'] = u'Emails are on..'
+				ctx['status'] = u'ON'
+				return HttpResponse(simplejson.dumps(ctx), content_type="application/json")
+
+				
+			else:
+				ctx['message'] = u'Some error occured :( please try again.'
+				return HttpResponse(simplejson.dumps(ctx), content_type="application/json")
+			
+	
+	
+	elif request.method == 'GET':
+
+		if user.email_notification == 1:
+			user.email_notification = 0
+			user.save()
+			if user.email_notification == 0:
+				return HttpResponse("Ok no more emails..")
+			else:
+				return HttpResponse("Some error occured, please try again.")
+
+		elif user.email_notification == 0:	
+			user.email_notification = 1
+			user.save()
+			if user.email_notification == 1:
+				return HttpResponse("Emails are on..")
+			else:
+				return HttpResponse("Some error occured, please try again.")

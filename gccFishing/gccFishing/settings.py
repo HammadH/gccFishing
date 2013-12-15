@@ -17,10 +17,10 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'gccfishingdb',                      # Or path to database file if using sqlite3.
+        'NAME': 'new_db',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': 'hammad',
-        'PASSWORD': 'quakeroats9',
+        'PASSWORD': '1234',
         'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',  
         'OPTIONS': {'autocommit': True,},                    # Set to empty string for default.
@@ -135,6 +135,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'onlineuser.middleware.OnlineUserMiddleware',
    
     
     # Uncomment the next line for simple clickjacking protection:
@@ -167,6 +168,7 @@ EMAIL_HOST_PASSWORD='quakeroats9'
 DEFAULT_FROM_EMAIL = 'registration@gccfishing.com'
 SERVER_EMAIL = 'registration@gccfishing.com'
 
+
 AUTH_USER_MODEL = 'authtools.User'
 
 
@@ -192,16 +194,27 @@ INSTALLED_APPS = (
     'notifications',
     'endless_pagination',
     'voting',
-    'jfu',
     'smart_selects', 
     'spots',
     'geoposition',
     'hitcount',
     'taggit',
+    'onlineuser',
+    'django_youtube',
+  
+
    
 
 
 )
+
+
+YOUTUBE_AUTH_EMAIL='gulffishingclub@gmail.com'
+YOUTUBE_AUTH_PASSWORD = 'gulffishingclub9'
+YOUTUBE_DEVELOPER_KEY ='AI39si4_Dqttun_DTwE0TuWbSJjyAyltjof9v450LxoxJlW1rofAzoKz8RaNLo591V5pr4sPb2vRbA3acjvEO8sFBgsmxhB2Eg'
+YOUTUBE_CLIENT_ID='859001681525.apps.googleusercontent.com'
+
+
 
 
 HITCOUNT_KEEP_HIT_ACTIVE = {'days':7}
