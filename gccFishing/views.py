@@ -376,7 +376,7 @@ def invite(request):
 		email = request.POST['email']
 		
 		if request.user.is_authenticated():
-			temp_ctx['name'] = user.name
+			temp_ctx['name'] = request.user.name
 		else:
 			temp_ctx['name']= u"a member"
 
