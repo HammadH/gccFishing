@@ -138,6 +138,37 @@ else{
 });
 
 
+$(document).on("submit", ".invitation_form", function(e){
+e.preventDefault();
+var invitation_form = $('.invitation_form')
+var email = $(this).find('input[name="email"]').val();
+$.ajax({
+      url: "{% url 'email_invite' %}",
+      dataType:"json",
+      type:"POST",
+      data:{
+        email:email,
+
+      },
+      success:function(response)
+      {
+        if (response.success)
+        {
+          alert(response.message);
+          $(".invitation_form").trigger("reset");
+        }
+        else (response.error)
+        {
+          alert(response.message);
+          $(".invitation_form").trigger("reset");
+        }
+      },
+
+});
+
+
+
+});
 
 
 $(document).on("submit", ".comment_form", function(e){
@@ -799,13 +830,31 @@ $('#wallpost_form').submit(function(e){
                
             </div>
           
-            <div class="col-sm-3">
+            
+
+            <div class="col-sm-8">
+               
 
             </div>
 
           </div> <!--row-->
 
+          <div class="row" style="background-color:#3F505F;margin-top:10px; margin-left:3px;padding:3px;">
+            <div class="col-sm-8">
+              <p style="margin-bottom:; font-size:12px; color:white;">Help spread the word. Invite people to the club.</p>
+             <form class="invitation_form" method="POST" >{% csrf_token %}
+                <div class="input-group">
+                <input type="text" name="email" class="form-control" placeholder="Email address" />
+                  <span class="input-group-btn">
+                  <button class="btn btn-default" type="submit">Invite</button>
+                  </span>
+                </div><!-- /input-group -->
+             </form> 
+           
 
+          </div>
+
+        </div>
 
 
 

@@ -29,6 +29,10 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.utils import simplejson
 
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string, get_template
+from django.template import Context
+
 
 
 from Locations.models import Country, City, Location
@@ -347,3 +351,62 @@ def subscription(request, id):
 				return HttpResponse("Emails are on..")
 			else:
 				return HttpResponse("Some error occured, please try again.")
+
+
+def invite(request):
+	
+
+	server_response = {
+	'success': '',
+	'error':'',
+	'message':'',
+
+	}
+
+	temp_ctx = Context()
+
+	if request.is_ajax():
+		try:
+			EmailField().clean(request.POST['email'])
+		except ValidationError:
+			server_response['success'] = 0
+			server_response['error'] = 1
+			server_response['message'] = u"Please enter a valid email address"
+			return HttpResponse(simplejson.dumps(server_response), content_type="application/json")
+		email = request.POST['email']
+		
+		if request.user.is_authenticated():
+			temp_ctx['name'] = user.name
+		else:
+			temp_ctx['name']= u"a member"
+
+		message_temp = get_template('invitation.html')
+		message = message_temp.render(temp_ctx)
+
+		email = EmailMultiAlternatives("Invitation to join the Club!", message, 'Gulf Fishing Club <register@gccfishing.com>', [email] )
+		email.attach_alternative(message, 'text/html')
+		if email.send():
+			server_response['success']=1
+			server_response['error']=0
+			server_response['message']='Thank you! Invitation sent..'
+
+			return HttpResponse(simplejson.dumps(server_response), content_type="application/json")
+		else:
+			server_response['success']=0
+			server_response['error']=1
+			server_response['message']='Some error occured! Try again'			
+			return HttpResponse(simplejson.dumps(server_response), content_type="application/json")
+
+
+	else:
+		return
+		#must implement
+
+
+
+
+
+
+
+
+		

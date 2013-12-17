@@ -9,7 +9,7 @@ admin.autodiscover()
 from authtools.urls import *
 from views import registration, loginView, logoutView, activate, profile,   \
 notifications_view, process_notification_and_redirect_view, indexView, country_select, EditProfile, \
-subscription
+subscription, invite
 from django.views.generic import TemplateView
 from Locations import urls
 from django.contrib.auth import get_user_model
@@ -78,6 +78,8 @@ urlpatterns = patterns('',
 
     url(r'^subscription/(?P<id>\d+)', subscription, name='subscription'),
     url(r'^youtube/', include('django_youtube.urls')),
+
+    url(r'^invite/', invite, name='email_invite'),
 ) 
 
 
