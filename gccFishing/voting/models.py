@@ -3,8 +3,9 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models.loading import get_model
 from django.db.models.signals import post_save
-from wall.models import Wallpost
+
 
 
 User = get_user_model()
@@ -52,7 +53,7 @@ class Vote(models.Model):
 
 
 def update_user_reputation(sender, instance, created,  **kwargs):
-    post = Wallpost.objects.get(id=instance.object_id)
+    post = get_model('wall','Wallpost').objects.get(id=instance.object_id)
     user = post.author
     if instance.vote == 1:
         user.reputation += 5

@@ -1,4 +1,6 @@
 import os
+import djcelery
+djcelery.setup_loader()
 
 SITE_ROOT = os.path.dirname(__file__)
 
@@ -201,12 +203,13 @@ INSTALLED_APPS = (
     'taggit',
     'onlineuser',
     'django_youtube',
-  
+    'djcelery',
 
-   
+   )
 
 
-)
+BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 
 YOUTUBE_AUTH_EMAIL='gulffishingclub@gmail.com'

@@ -11,9 +11,13 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from Locations.models import City, Country 
 
+
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template, render_to_string
 from django.template import Context
+
+
+
 
 
 from notifications import notify
@@ -35,9 +39,12 @@ class WallpostManager(models.Manager):
 	def create_post(self, author, country, city, image = None, image_1=None, image_2=None, image_3=None, text = None):
 		try:
 			post = self.create(author=author, country= country, city=city, image=image, image_1=image_1, image_2=image_2, image_3=image_3, text=text)
+			print('post created')
 			post_save.send(sender = self.__class__, instance = post)
+			print('save signal sent')
 			return post
 		except:
+			print('save signal not sent, returning None')
 			return None
 		
 
@@ -172,48 +179,7 @@ def comment_notification_handler(sender, instance, created, **kwargs):  #use cel
 
 
 
-def send_emails(sender, instance, created, **kwargs):  #use celery here
-	
-	if created:
-		return
-		if isinstance(instance, Wallpost):
-			author = getattr(instance, 'author')
-			city = getattr(instance, 'city')
-			email_list = []
-			users = User.objects.filter(city=city, email_notification=1).exclude(id=author.id)
-			for user in users:
-				if user.is_active == True:
-					if user.online.online() == False:
-						email_list.append(user.email)
-					else:
-						pass
-				else:
-					pass	
-			print email_list				
 
-			context = Context()
-			context['post'] = instance
-			context['author'] = author
-			context['city'] = city
-			
-			subject = getattr(instance, 'text')
-			if subject == '':
-				subject = render_to_string('post_created.txt', context)
-				body_html = get_template('post_created_body_empty.html')
-				body_txt = render_to_string('post_created_body_empty.txt')
-			else:
-				body_html = get_template('post_created_body.html')
-				body_txt = render_to_string('post_created_body.txt')
-
-			body = body_html.render(context)
-
-	
-			for email in email_list:
-				email = EmailMultiAlternatives(subject, body_txt, 'Gulf Fishing Club <notifications@gccfishing.com>', [email])
-				email.attach_alternative(body, "text/html")
-				email.send()
-		else:
-			pass
 
 	
 
@@ -221,7 +187,6 @@ def send_emails(sender, instance, created, **kwargs):  #use celery here
 
 post_save.connect(comment_notification_handler, sender = Comment, dispatch_uid='comment_posted_notification')
 
-post_save.connect(send_emails, sender = Wallpost, dispatch_uid="new_post_notification")
 
 
 admin.site.register(Wallpost)
