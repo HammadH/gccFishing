@@ -9,7 +9,7 @@ admin.autodiscover()
 from authtools.urls import *
 from views import registration, loginView, logoutView, activate, profile,   \
 notifications_view, process_notification_and_redirect_view, indexView, country_select, EditProfile, \
-subscription, invite
+subscription, invite, del_notif, clear_notif
 from django.views.generic import TemplateView
 from Locations import urls
 from django.contrib.auth import get_user_model
@@ -63,6 +63,9 @@ urlpatterns = patterns('',
 
     
     url('^inbox/notifications/', include(notifications.urls)),
+    url(r'clear_notif/', clear_notif, name='clear_notifications'),
+    url(r'delete_notif/', del_notif, name='delete_notifications'),
+
 
     url(r'^(?P<user_id>\d+)/notifications/', notifications_view, name='notifications'),
     url(r'^chaining/', include('smart_selects.urls')),

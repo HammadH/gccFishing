@@ -279,10 +279,25 @@ def notifications_view(request, user_id):
 		user = User.objects.get(id=user_id)
 		notifications = request.user.notifications.all()
 		city = City.objects.get(id = user.city.id)
-		return render_to_response('notifications.html', {'notifications':notifications, 'user':user, 'city':city})
+		return render_to_response('notifications.html', {'notifications':notifications, 'user':user, 'city':city}, RequestContext(request))
 
 	else:
 		return render_to_response('page_not_found.html')
+
+def del_notif(request):
+
+	user = request.user
+	notifications = request.user.notifications.read()
+	for notification in notifications:
+		notification.delete()
+	return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+def clear_notif(request):
+	
+	user = request.user
+	notifications = request.user.notifications.mark_all_as_read()
+	return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
 
 
 

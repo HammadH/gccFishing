@@ -56,22 +56,11 @@
 <div class="jumbotron" style="margin-top:40px">
       <div class="container" >
        <ul class = "nav pull-left" style="padding: 2%">
-       <img class= "img-circle" src= "/media/logo.jpg" height="100px" width="100px">
+       
        </ul>
         <h1>Fishing in {{city}}</h1>
-        <p>Share information - Ask questions - Upload catches</p>
-        {% if user.is_authenticated %}
+       
         
-        {% else %}
-
-
-        <ul class = "nav pull-right">
-        <p><a href="/register" class="btn btn-primary btn-sm">Join for FREE! &raquo;</a></p>
-        </ul>
-
-
-      {% endif %}
-      
 
 
       </div>
@@ -88,11 +77,7 @@
       <!-- Example row of columns -->
    <ul class="nav nav-tabs">
   <li ><a href="{% url 'insideCity_wall' user.country.slug user.city.slug %}"><img src = "/media/Images/wall.png" style="margin-right:5px">Wall</a></li>
-  <li ><a href="/locations/{{city.country.slug}}/{{city.slug}}/spots"><img src = "/media/Images/spots.png" style="margin-right:5px"> Fishing Spots</a></li>
-  <li ><a href="{% url 'insideCity_items' user.country.slug user.city.slug  %}"><img src = "/media/Images/rod.png" style=" width:35px; height:35px;margin-right:5px; margin-bottom:-10px"> Buy/Sell</a></li>
-  <li ><a href="{% url 'insideCity_offshore' user.country.slug user.city.slug  %}"><img src = "/media/Images/offshore.png" style="margin-right:5px"> Offshore</a></li>
-  <li><a href="{% url 'insideCity_fishes' user.country.slug user.city.slug  %}"><img src = "/media/Images/fishes.png" style="margin-right:5px"> Fishes</a></li>
-  <li><a href="{% url 'insideCity_scuba' user.country.slug user.city.slug  %}"><img src = "/media/Images/scuba.png" style="margin-right:5px"> Scuba diving</a></li>
+  
   
   {% notifications_unread as unread_count %}
       
@@ -119,8 +104,13 @@
  {% notifications_unread as unread_count %}
 
 {% if unread_count %}
-    <p style="text-align:center; "> New </p>
+    <div class ="row">
 
+    <p style="text-align:center; "> New </p>
+    <div class="pull-right" style="margin:10px;">
+     <a style="text-decoration:none" href="{% url 'clear_notifications' %}"><button class="btn btn-success btn-sm"> Clear all <i class="glyphicon glyphicon-cog" style="size:75%"></i></button></a><br>
+  </div>
+</div>
   {% for notification in user.notifications.unread %}  
     
     <div class="alert alert-danger">
@@ -143,9 +133,15 @@
 
   <div class="container" >
 
-    {% if user.notifications %}
+    {% if user.notifications.read %}
+<div class ="row">
 
-<p style="text-align:center; "> Old </p>
+   <p style="text-align:center; "> Old </p>
+    <div class="pull-right" style="margin:10px;">
+     <a style="text-decoration:none" href="{% url 'delete_notifications' %}"><button class="btn btn-danger btn-sm"> Delete all <i class="glyphicon glyphicon-cog" style="size:75%"></i></button></a><br>
+  </div>
+</div>
+
   {% for notification in user.notifications.read %}
       <div class="alert alert-success">
       <a href="{% url 'views.process_notification_and_redirect_view' notification_id=notification.id %}" style="text-decoration:none">{{notification}}</a>
