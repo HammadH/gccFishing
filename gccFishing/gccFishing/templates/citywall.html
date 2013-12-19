@@ -856,6 +856,28 @@ $('#wallpost_form').submit(function(e){
 
         </div>
 
+          <div class="row" style=";margin-top:10px; margin-left:3px;padding:3px;">
+            <div class="col-sm-6"  style="background-color:#E5E3E3;;height:360px;overflow-y:auto; margin-right:10px; margin-bottom:10px;border:3px solid; border-color:#3F505F">
+         
+          <table class="col-sm-12" style="background-color:;">
+          <p style="text-align:center; color:#3F505F;"><b>{{city.name}}</b> members</p>
+            <hr style="border-color:#3F505F">
+          {% for member in members %}
+          <tr >
+          <td ><a href = "{% url 'profile' member.id %}">{% thumbnail member.image "30x30" crop="center" as im %}
+        <img src ="{{im.url}}" width="{{im.width}}" height="{{im.height}}">
+         {% endthumbnail %}</a>
+         </td>
+          <td title = "name" style="text-align:; font-size:12px;"> <a href = "{% url 'profile' member.id %}" style="color:#3F505F;">{{member.name}} </a></td>
+           <td title = "reputation" style="text-align:center; font-size:11px;"><b style="color:#3F505F;">{{member.reputation}}</b>
+         </td>
+          </tr>  
+        {% endfor %}
+        </table>
+
+          
+          </div>
+          </div>
 
 
 
