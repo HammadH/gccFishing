@@ -17,7 +17,7 @@ from django.views.generic.edit import CreateView
 from Locations.models import City
 
 
-from Locations.views import countryView, process_up_vote, process_down_vote,ajax_Upvote, ajax_Downvote, addCity
+from Locations.views import countryView, process_up_vote, process_down_vote,ajax_Upvote, ajax_Downvote, addCity, edit_comment, delete_comment
 from hitcount.views import update_hit_count_ajax
 
 import notifications
@@ -83,6 +83,9 @@ urlpatterns = patterns('',
     url(r'^youtube/', include('django_youtube.urls')),
 
     url(r'^invite/', invite, name='email_invite'),
+
+    url(r'^edit_comment/(?P<comment_id>\d+)', edit_comment, name='edit_comment'),
+    url(r'^delete_comment/(?P<comment_id>\d+)', delete_comment, name='delete_comment'),
 ) 
 
 

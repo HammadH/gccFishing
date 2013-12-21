@@ -1,7 +1,7 @@
 
 {% load thumbnail %}
 
-
+<div class="new_comment">
 <div class="row" style="background-color:white;margin:5px;border:;border-color:;padding:8px;"> 
         
         <ul class="nav pull-left" style="text-align:center; margin:5px">
@@ -17,5 +17,10 @@
             <p style="font-size:12px;">{{comment.text}}</p>
        </div>
         
-         <span class="pull-right" style="font-size:10px; color:grey;">{{comment.posted_on}}</span>
+         <span class="pull-right" style="font-size:10px; color:grey;">{{comment.posted_on}}<br>
+         
+         <a href="{% url 'edit_comment' comment.id %}" class="edit_comment_button" data-id ="{{comment.id}}" style="font-size:10px;">edit</a><br>
+          <a href="{% url 'delete_comment' comment.id %}" class="delete_comment_button" data-id ="{{comment.id}}" style="font-size:10px;">delete</a>
+        </span>
        </div>
+</div>

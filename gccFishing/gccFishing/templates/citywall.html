@@ -220,6 +220,59 @@ e.preventDefault();
 
 });
    
+$(document).on("click", ".edit_comment_button", function(e){
+    e.preventDefault();
+    $.getJSON($(this).attr("href"), function(data){
+      $(".new_comment").html(data);
+    });
+  });
+
+$(document).on("submit", ".edited_comment_form", function(e){
+  e.preventDefault();
+  $.ajax({
+    url: $(this).attr("action"),
+    type:"POST",
+    dataType:"json",
+    data: {
+      comment: $(this).find('input[name="comment"]').val(),
+    },
+
+    success:function(data){
+      $(".new_comment").html(data);
+
+    },
+
+  });
+
+});
+
+
+$(document).on("click", ".delete_comment_button", function(e){
+e.preventDefault();
+$.ajax({
+  url: $(this).attr("href"),
+  type: "POST",
+  data:{
+    comment_id: $(this).data('id'),
+  },
+  success:function(data){
+    if (data.status == 1)
+    {
+      $(".new_comment").remove();
+    }
+    else
+    {
+      alert("Oh snap! something went wrong, please try again")
+    }
+  },
+
+
+
+});
+
+
+});
+
 
    
 $(document).on("click", ".upButton", function(e){

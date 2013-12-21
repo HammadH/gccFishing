@@ -108,7 +108,6 @@ class citywall(View):
 				if request.POST.has_key('comment'):
 				
 					comment = request.POST.get('comment','')
-					print comment
 					if comment == '':
 						
 						server_response['error'] = 1
@@ -268,6 +267,52 @@ class citywall(View):
 	def parse_tags(self, tags):
 		parsed_tags = tags.split()
 		return parsed_tags
+
+
+
+def edit_comment(request, comment_id):
+	context = {}
+	if request.method == 'POST':
+		if request.is_ajax():
+			comment = Comment.objects.get(id = comment_id)
+			comment.text = request.POST['comment']
+			comment.save()
+			context['comment'] = comment
+			context['author'] = comment.author
+			comment_template = render_to_string('comment.html', context)
+			return HttpResponse(simplejson.dumps(comment_template), content_type="application/json")
+		else:
+			comment = Comment.objects.get(id = comment_id)
+			comment.text = request.POST['comment']
+			comment.save()
+			return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+				
+	else:
+		comment = Comment.objects.get(id = comment_id)
+		author = comment.author
+		context['comment'] = comment
+		context['author'] = author
+		comment_form = render_to_string('comment_edit_form.html', context, RequestContext(request))
+		return HttpResponse(simplejson.dumps(comment_form), content_type="application/json")
+
+
+def delete_comment(request, comment_id):
+	if request.method == "POST":
+		if request.is_ajax():
+			comment = Comment.objects.get(id = comment_id)
+			response = {}
+			try:
+				comment.delete()
+				response['status'] = 1
+				return HttpResponse(simplejson.dumps(response), content_type="application/json")
+			except:
+				response['status'] = 0
+				return HttpResponse(simplejson.dumps(response), content_type="application/json")
+
+		else:
+			comment = Comment.objects.get(id = comment_id)
+			comment.delete()
+			return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 
