@@ -37,7 +37,7 @@ def send_emails(sender, instance, created, **kwargs):
 		for user in users:
 			if user.is_active == True:
 			#	if user.online.online() == False:
-			#		email_list.append(user.email)
+				email_list.append(user.email)
 			#	else:
 			#		pass
 			else:
