@@ -51,9 +51,12 @@ def send_emails(sender, instance, created, **kwargs):
 			
 		subject = getattr(instance, 'text')
 		
-		if '\n' in subject:
-			return
-		
+
+		if '\n' in subject[:70]:
+			subject = subject.split("\n")[0]
+		else:
+			subject = subject[:70] 
+
 		if subject == '':
 			subject = render_to_string('post_created.txt', context)
 			body_html = get_template('post_created_body_empty.html')

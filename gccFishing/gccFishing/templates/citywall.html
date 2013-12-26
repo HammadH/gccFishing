@@ -575,8 +575,10 @@ $('#wallpost_form').submit(function(e){
   </div>
 
 <div class="row">
-<div class="col-lg-2">
-
+<div class="col-lg-2" style="margin-left:20px; margin-top:50px;">
+{% if city.slug == "jubail" %}
+<div style="width:195px; text-align:center;" ><iframe  src="http://www.eventbrite.com/calendar-widget?eid=9945319719" frameborder="0" height="540" width="195" marginheight="0" marginwidth="0" scrolling="no" allowtransparency="true"></iframe><div style="font-family:Helvetica, Arial; font-size:10px; padding:5px 0 5px; margin:2px; width:195px; text-align:center;" ><a style="color:#ddd; text-decoration:none;" target="_blank" href="http://www.eventbrite.com/r/ecal">Sell Tickets</a> <span style="color:#ddd;">through</span> <a style="color:#ddd; text-decoration:none;" target="_blank" href="http://www.eventbrite.com?ref=ecal">Eventbrite</a></div></div>
+{% endif %}
 </div>
 <div class="col-lg-8">  
 <div class="container" style="margin-top:200px;background-color:orange;">
@@ -710,7 +712,7 @@ $('#wallpost_form').submit(function(e){
        </ul>
        <div class="pull-right">
        
-       <p style="text-align:center; font-family:'Cookie',cursive; font-size:large; color:#5C5D5F; ">Posted on {{post.posted_on}}</p>
+       <p style="text-align:center; font-family:'Cookie',cursive; font-size:large; color:#5C5D5F; ">Posted on {{post.posted_on|date:"M d, Y" }}</p>
     
       
        </div>
@@ -811,7 +813,7 @@ $('#wallpost_form').submit(function(e){
             <p style="font-size:12px;">{{comment.text}}</p>
        </div>
         
-         <span class="pull-right" style="font-size:10px; color:grey;">{{comment.posted_on}}</span>
+         <span class="pull-right" style="font-size:10px; color:grey;">{{comment.posted_on|date:"M d, Y" }}</span>
        </div>
         {%endfor%}
       </div>
